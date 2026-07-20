@@ -67,13 +67,9 @@ for key, val in stats:
     elif key == ".":
         pass
     else:
-        # key
         draw.text((x_start, y), key, font=font, fill=(227, 179, 65))
         
-        # calc dots manually since textlength might not align perfectly for spaces
-        # actually, just use absolute positioning for value so it's perfectly aligned!
         val_x = x_start + (240 * scale)
-        # draw dots between key and val
         key_width = draw.textlength(key + " ", font=font)
         dot_width = draw.textlength(".", font=font)
         
@@ -87,9 +83,8 @@ for key, val in stats:
         
     y += 20 * scale
 
-im.save("readme-banner.png")
+im.save("readme-banner-v2.png")
 
-# Write README.md with explicit width to trigger retina scaling
 with open("README.md", "w") as f:
-    f.write('<div align="center">\n  <img src="readme-banner.png" width="900" alt="Portfolio Terminal">\n</div>\n')
+    f.write('<div align="center">\n  <img src="readme-banner-v2.png" width="900" alt="Portfolio Terminal">\n</div>\n')
 
