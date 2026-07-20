@@ -26,7 +26,7 @@ stats = [
 ]
 
 scale = 2
-W, H = 1000 * scale, 480 * scale
+W, H = 1100 * scale, 490 * scale
 bg_color = (13, 17, 23)
 border_color = (48, 54, 61)
 
@@ -42,8 +42,9 @@ except:
     font_bold = ImageFont.load_default()
     font = ImageFont.load_default()
 
-IMG_W = 380 * scale
-IMG_H = 450 * scale
+# Bigger image
+IMG_W = 400 * scale
+IMG_H = 460 * scale
 try:
     prof = Image.open("profile.png")
     prof.thumbnail((IMG_W, IMG_H), Image.Resampling.LANCZOS)
@@ -54,12 +55,14 @@ try:
 except Exception as e:
     print(f"Image error: {e}")
 
-x_start = 400 * scale
+x_start = 420 * scale
 y = 40 * scale
-line_height = 19 * scale
+line_height = 20 * scale
 
-# Fixed value column: 570px from left edge (170px from text start)
-val_col = 570 * scale
+# The longest key is ". Languages.Programming:" so val column must be past that
+# measure it first
+longest_key_w = draw.textlength(". Languages.Programming: ", font=font)
+val_col = x_start + int(longest_key_w) + (25 * scale)  # 25px gap after longest key
 
 for key, val in stats:
     if key == "andrahijati@JuniorDevops":
@@ -76,7 +79,8 @@ for key, val in stats:
         draw.text((x_start, y), key, font=font, fill=(227, 179, 65))
         key_end = x_start + draw.textlength(key + " ", font=font)
         dot_width = draw.textlength(".", font=font)
-        dots_count = max(1, int((val_col - key_end - 8 * scale) / dot_width))
+        dots_space = val_col - key_end - (6 * scale)
+        dots_count = max(1, int(dots_space / dot_width))
         dots = "." * dots_count
         draw.text((key_end, y), dots, font=font, fill=(139, 148, 158))
         draw.text((val_col, y), val, font=font, fill=(121, 192, 255))
@@ -85,5 +89,5 @@ for key, val in stats:
 im.save("readme-banner-v4.png")
 
 with open("README.md", "w") as f:
-    f.write('<div align="center">\n  <img src="readme-banner-v4.png" width="1000" alt="Portfolio Terminal">\n</div>\n')
+    f.write('<div align="center">\n  <img src="readme-banner-v4.png" width="1100" alt="Portfolio Terminal">\n</div>\n')
 
