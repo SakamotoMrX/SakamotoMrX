@@ -17,8 +17,8 @@ text, tspan {white-space: pre;}
 <text x="20" y="57"><tspan class="key">. OS:</tspan><tspan class="dots"> ........................................................... </tspan><tspan class="val">Macos, Linux, Windows</tspan></text>
 <text x="20" y="79"><tspan class="key">. Uptime:</tspan><tspan class="dots"> .......................................................... </tspan><tspan class="val">15 years, 5 months</tspan></text>
 <text x="20" y="101"><tspan class="key">. Host:</tspan><tspan class="dots"> ................................................................. </tspan><tspan class="val">Junior Devops</tspan></text>
-<text x="20" y="123"><tspan class="key">. Shell:</tspan><tspan class="dots"> ........................................................... </tspan><tspan class="val">Jakarta, Indonesia</tspan></text>
-<text x="20" y="145"><tspan class="key">. IDE:</tspan><tspan class="dots"> ............................................ </tspan><tspan class="val">Antigravity IDE, Vim, Nvim, Lazygit</tspan></text>
+<text x="20" y="123"><tspan class="key">. Shell:</tspan><tspan class="dots"> ............................................................. </tspan><tspan class="val">Bogor, Indonesia</tspan></text>
+<text x="20" y="145"><tspan class="key">. IDE:</tspan><tspan class="dots"> ............................... </tspan><tspan class="val">Antigravity IDE, Vim, Nvim, Lazygit, Arduino IDE</tspan></text>
 <text x="20" y="189"><tspan class="key">. Languages.Programming:</tspan><tspan class="dots"> ......................................................... </tspan><tspan class="val">Bash</tspan></text>
 <text x="20" y="211"><tspan class="key">. Languages.Computer:</tspan><tspan class="dots"> ............................................................ </tspan><tspan class="val">YAML</tspan></text>
 <text x="20" y="233"><tspan class="key">. Languages.Real:</tspan><tspan class="dots"> .................................................. </tspan><tspan class="val">Indonesia, English</tspan></text>
@@ -30,4 +30,5 @@ text, tspan {white-space: pre;}
 <text x="20" y="431"><tspan class="title">- Contact </tspan><tspan class="dots">─────────────────────────────────────────────────────────────────────────────</tspan></text>
 <text x="20" y="453"><tspan class="key">. Email.Personal:</tspan><tspan class="dots"> ............................................... </tspan><tspan class="val">andrahijati@gmail.com</tspan></text>
 <text x="20" y="475"><tspan class="key">. Discord:</tspan><tspan class="dots"> ................................................................ </tspan><tspan class="val">legacyy5030</tspan></text>
+<text x="20" y="497"><tspan class="key">. Facebook:</tspan><tspan class="dots"> ................................ </tspan><tspan class="val">https://web.facebook.com/andra.nugroho.921</tspan></text>
 </svg>

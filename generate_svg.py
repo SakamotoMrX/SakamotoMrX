@@ -36,6 +36,7 @@ stats = [
     ("sect",  "- Contact",               ""),
     ("row",   ". Email.Personal:",        "andrahijati@gmail.com"),
     ("row",   ". Discord:",               "legacyy5030"),
+    ("row",   ". Facebook:",              "https://web.facebook.com/andra.nugroho.921"),
 ]
 
 # ─────────────────── SVG BUILD ─────────────────────────────────────────────
@@ -105,15 +106,15 @@ for kind, key, val in stats:
 
 out.append('</svg>')
 
-with open("dark_mode.svg", "w", encoding="utf-8") as f:
+with open("terminal_profile.svg", "w", encoding="utf-8") as f:
     f.write("\n".join(out))
 
 with open("README.md", "w") as f:
     f.write(
         '<a href="https://github.com/SakamotoMrX/SakamotoMrX">\n'
         '  <picture>\n'
-        '    <source media="(prefers-color-scheme: dark)" srcset="dark_mode.svg">\n'
-        '    <img src="dark_mode.svg" alt="andrahijati terminal profile">\n'
+        '    <source media="(prefers-color-scheme: dark)" srcset="terminal_profile.svg">\n'
+        '    <img src="terminal_profile.svg" alt="andrahijati terminal profile">\n'
         '  </picture>\n'
         '</a>\n'
     )
