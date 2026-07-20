@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" font-family="Consolas,Menlo,monospace" width="985px" height="530px" font-size="16px">
+<style>
+@font-face {
+  src: local('Consolas'), local('Menlo');
+  font-family: 'Consolas';
+  font-display: swap;
+}
+.key   {fill: #ffa657;}
+.val   {fill: #a5d6ff;}
+.title {fill: #c9d1d9; font-weight: bold;}
+.dots  {fill: #616e7f;}
+text, tspan {white-space: pre;}
+</style>
+<rect width="985px" height="530px" fill="#161b22" rx="12"/>
+<text x="15" y="30" fill="#c9d1d9">
+  <tspan x="15" y="30">                  5F                  </tspan>
+  <tspan x="15" y="50">              COHNRRWBKY              </tspan>
+  <tspan x="15" y="70">             aKQQWQDHDM&amp;4w            </tspan>
+  <tspan x="15" y="90">            uh0WNOgPbbEZq3            </tspan>
+  <tspan x="15" y="110">           ,y4b4HdLp8QHqC4yn          </tspan>
+  <tspan x="15" y="130">          hKVgqFYmVEDMAF#g5J          </tspan>
+  <tspan x="15" y="150">         :yNQQRMBVEmZNOg&amp;G3?          </tspan>
+  <tspan x="15" y="170">       TwqPhfXGGFu&amp;YS0Qd&amp;KVeo         </tspan>
+  <tspan x="15" y="190">     gg5dbZ]pkgYy6dDbV$hXXqmnn 5!)    </tspan>
+  <tspan x="15" y="210"> x*n3X254ZwcCPZAm2&amp;RF2ShEw5pdq5F7     </tspan>
+  <tspan x="15" y="230">  a3phS24PwpJV@UEYQ4wgpVdkC23pF#      </tspan>
+  <tspan x="15" y="250">    tCq6Z6GS7p$&amp;DQNy35t5BQQAnn?e      </tspan>
+  <tspan x="15" y="270">    njpp42w[tzgkK$dXOpS1wGb5J4*       </tspan>
+  <tspan x="15" y="290">    qwywmq1zEUfCFVTANgXST1Czuj        </tspan>
+  <tspan x="15" y="310">     QC mmydWQY4MQAZQObbgbfaw?        </tspan>
+  <tspan x="15" y="330">         j8AQBK&amp;QQR&amp;QNY$4Qj           </tspan>
+  <tspan x="15" y="350">         EN@Q@DHQQQ@QQbKBQX^          </tspan>
+  <tspan x="15" y="370"></tspan>
+  <tspan x="15" y="390"></tspan>
+  <tspan x="15" y="410"></tspan>
+  <tspan x="15" y="430"></tspan>
+  <tspan x="15" y="450"></tspan>
+  <tspan x="15" y="470"></tspan>
+  <tspan x="15" y="490"></tspan>
+</text>
+<text x="405" y="30"><tspan class="title">andrahijati@JuniorDevops</tspan><tspan class="dots"> ─────────────────────────────────</tspan></text>
+<text x="405" y="50"><tspan class="key">. OS:</tspan><tspan class="dots"> .............................. </tspan><tspan class="val">Macos, Linux, Windows</tspan></text>
+<text x="405" y="70"><tspan class="key">. Uptime:</tspan><tspan class="dots"> ............................. </tspan><tspan class="val">15 years, 5 months</tspan></text>
+<text x="405" y="90"><tspan class="key">. Host:</tspan><tspan class="dots"> .................................... </tspan><tspan class="val">Junior Devops</tspan></text>
+<text x="405" y="110"><tspan class="key">. Shell:</tspan><tspan class="dots"> .............................. </tspan><tspan class="val">Jakarta, Indonesia</tspan></text>
+<text x="405" y="130"><tspan class="key">. IDE:</tspan><tspan class="dots"> ............... </tspan><tspan class="val">Antigravity IDE, Vim, Nvim, Lazygit</tspan></text>
+<text x="405" y="170"><tspan class="key">. Languages.Programming:</tspan><tspan class="dots"> ............................ </tspan><tspan class="val">Bash</tspan></text>
+<text x="405" y="190"><tspan class="key">. Languages.Computer:</tspan><tspan class="dots"> ............................... </tspan><tspan class="val">YAML</tspan></text>
+<text x="405" y="210"><tspan class="key">. Languages.Real:</tspan><tspan class="dots"> ..................... </tspan><tspan class="val">Indonesia, English</tspan></text>
+<text x="405" y="250"><tspan class="key">. Skills.System:</tspan><tspan class="dots"> ..... </tspan><tspan class="val">LinuxSysAdmin, VM, Containerization</tspan></text>
+<text x="405" y="270"><tspan class="key">. Skills.WebDev:</tspan><tspan class="dots"> .. </tspan><tspan class="val">Basic Website, Git &amp; GitHub, Deploying</tspan></text>
+<text x="405" y="290"><tspan class="key">. Skills.Process:</tspan><tspan class="dots"> ........................... </tspan><tspan class="val">SDLC &amp; Agile</tspan></text>
+<text x="405" y="330"><tspan class="key">. Hobbies.Software:</tspan><tspan class="dots"> ........................ </tspan><tspan class="val">Larping Linux</tspan></text>
+<text x="405" y="350"><tspan class="key">. Hobbies.Hardware:</tspan><tspan class="dots"> .............................. </tspan><tspan class="val">Arduino</tspan></text>
+<text x="405" y="390"><tspan class="title">- Contact </tspan><tspan class="dots">────────────────────────────────────────────────</tspan></text>
+<text x="405" y="410"><tspan class="key">. Email.Personal:</tspan><tspan class="dots"> .................. </tspan><tspan class="val">andrahijati@gmail.com</tspan></text>
+<text x="405" y="430"><tspan class="key">. Discord:</tspan><tspan class="dots"> ................................... </tspan><tspan class="val">legacyy5030</tspan></text>
+</svg>

@@ -1,91 +1,144 @@
-import base64
-import os
+from PIL import Image
+import ascii_magic
+import html
 
+# ─────────────────── CONFIG ────────────────────────────────────────────────
+SVG_W    = 985
+SVG_H    = 530
+FONT_SZ  = 16
+LINE_H   = 20
+ASCII_COLS = 38
+ASCII_ROWS = 24
+TEXT_X   = 405
+TEXT_Y   = 30
+BG       = "#161b22"
+C_TITLE  = "#c9d1d9"
+C_KEY    = "#ffa657"
+C_VAL    = "#a5d6ff"
+C_DOTS   = "#616e7f"
+
+# ─────────────────── STATS ─────────────────────────────────────────────────
 stats = [
-    ("andrahijati@JuniorDevops", "--------------------------------"),
-    (". OS:", "Macos, Linux, Windows"),
-    (". Uptime:", "15 years, 5 months"),
-    (". Host:", "Junior Devops"),
-    (". Shell:", "Jakarta, Indonesia"),
-    (". IDE:", "Antigravity IDE, Vim, Nvim, Lazygit"),
-    (".", ""),
-    (". Languages.Programming:", "Bash"),
-    (". Languages.Computer:", "YAML"),
-    (". Languages.Real:", "Indonesia, English"),
-    (".", ""),
-    (". Skills.System:", "LinuxSysAdmin, Network, Deploying"),
-    (". Skills.WebDev:", "Basic Website, Git & GitHub"),
-    (". Skills.Process:", "SDLC & Agile"),
-    (".", ""),
-    (". Hobbies.Software:", "Larping Linux"),
-    (". Hobbies.Hardware:", "Arduino"),
-    (".", ""),
-    ("- Contact", "-----------------------------------------------"),
-    (". Email.Personal:", "andrahijati@gmail.com"),
-    (". Discord:", "legacyy5030")
+    ("title", "andrahijati@JuniorDevops", ""),
+    ("row",   ". OS:",                    "Macos, Linux, Windows"),
+    ("row",   ". Uptime:",                "15 years, 5 months"),
+    ("row",   ". Host:",                  "Junior Devops"),
+    ("row",   ". Shell:",                 "Jakarta, Indonesia"),
+    ("row",   ". IDE:",                   "Antigravity IDE, Vim, Nvim, Lazygit"),
+    ("sep",   "",                         ""),
+    ("row",   ". Languages.Programming:", "Bash"),
+    ("row",   ". Languages.Computer:",    "YAML"),
+    ("row",   ". Languages.Real:",        "Indonesia, English"),
+    ("sep",   "",                         ""),
+    ("row",   ". Skills.System:",         "LinuxSysAdmin, VM, Containerization"),
+    ("row",   ". Skills.WebDev:",         "Basic Website, Git & GitHub, Deploying"),
+    ("row",   ". Skills.Process:",        "SDLC & Agile"),
+    ("sep",   "",                         ""),
+    ("row",   ". Hobbies.Software:",      "Larping Linux"),
+    ("row",   ". Hobbies.Hardware:",      "Arduino"),
+    ("sep",   "",                         ""),
+    ("sect",  "- Contact",               ""),
+    ("row",   ". Email.Personal:",        "andrahijati@gmail.com"),
+    ("row",   ". Discord:",               "legacyy5030"),
 ]
 
-# Read profile.png and encode to base64
+# ─────────────────── ASCII art ─────────────────────────────────────────────
+ascii_lines = []
 try:
-    with open("profile.png", "rb") as f:
-        img_data = f.read()
-        b64_img = base64.b64encode(img_data).decode('utf-8')
-        img_href = f"data:image/png;base64,{b64_img}"
-except Exception:
-    # Fallback if profile.png is missing or unreadable
-    img_href = ""
+    art = ascii_magic.AsciiArt.from_image("profile.png")
+    raw = art.to_ascii(columns=ASCII_COLS, width_ratio=2.2, monochrome=True)
+    ascii_lines = raw.splitlines()[:ASCII_ROWS]
+    while len(ascii_lines) < ASCII_ROWS:
+        ascii_lines.append("")
+    print(f"ASCII art generated: {len(ascii_lines)} lines")
+except Exception as e:
+    print(f"ASCII error: {e}")
+    ascii_lines = ["" for _ in range(ASCII_ROWS)]
 
-svg_lines = []
-svg_lines.append('<svg width="900" height="480" viewBox="0 0 900 480" xmlns="http://www.w3.org/2000/svg">')
-svg_lines.append('  <style>')
-svg_lines.append('    .bg { fill: #0d1117; }')
-svg_lines.append('    .text { font-family: "Menlo", "Monaco", "Consolas", monospace; font-size: 14px; fill: #c9d1d9; }')
-svg_lines.append('    .key { fill: #e3b341; }')
-svg_lines.append('    .dots { fill: #8b949e; }')
-svg_lines.append('    .val { fill: #79c0ff; }')
-svg_lines.append('    .title { fill: #c9d1d9; font-weight: bold; }')
-svg_lines.append('  </style>')
-svg_lines.append('  <rect width="900" height="480" rx="10" ry="10" class="bg" stroke="#30363d" stroke-width="1"/>')
+# ─────────────────── SVG BUILD ─────────────────────────────────────────────
+def esc(s): return html.escape(str(s))
 
-if img_href:
-    svg_lines.append(f'  <image href="{img_href}" x="30" y="30" width="300" height="420" preserveAspectRatio="xMidYMid meet" />')
+CHAR_W     = 9.62   # Consolas 16px char width
+RIGHT_EDGE = SVG_W - 15
 
-y = 45
-x_start = 360
+out = []
+out.append(f'''<?xml version='1.0' encoding='UTF-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" font-family="Consolas,Menlo,monospace" width="{SVG_W}px" height="{SVG_H}px" font-size="{FONT_SZ}px">
+<style>
+@font-face {{
+  src: local('Consolas'), local('Menlo');
+  font-family: 'Consolas';
+  font-display: swap;
+}}
+.key   {{fill: {C_KEY};}}
+.val   {{fill: {C_VAL};}}
+.title {{fill: {C_TITLE}; font-weight: bold;}}
+.dots  {{fill: {C_DOTS};}}
+text, tspan {{white-space: pre;}}
+</style>
+<rect width="{SVG_W}px" height="{SVG_H}px" fill="{BG}" rx="12"/>''')
 
-for key, val in stats:
-    if key == "andrahijati@JuniorDevops":
-        svg_lines.append(f'  <text x="{x_start}" y="{y}" class="text"><tspan class="title">{key}</tspan> <tspan class="dots">{val}</tspan></text>')
-    elif key.startswith("- "):
-        svg_lines.append(f'  <text x="{x_start}" y="{y}" class="text"><tspan class="title">{key}</tspan> <tspan class="dots">{val}</tspan></text>')
-    elif key == ".":
-        pass # empty line, just increase y
-    else:
-        # Calculate dots based on length
-        # Target length for key + dots is around 35 chars
-        # wait, let's just use a fixed x for values to align perfectly!
-        # key is at x_start, value is at x_start + 220
-        # draw dots in between
-        
-        # let's format it as one string with dots
-        total_len = 50
-        dots_count = total_len - len(key) - len(val)
-        if dots_count < 1: dots_count = 1
-        dots = "." * dots_count
-        
-        svg_lines.append(f'  <text x="{x_start}" y="{y}" class="text"><tspan class="key">{key}</tspan> <tspan class="dots">{dots}</tspan> <tspan class="val">{val}</tspan></text>')
-    
-    y += 20
+# ASCII left panel
+out.append(f'<text x="15" y="{TEXT_Y}" fill="{C_TITLE}">')
+for i, line in enumerate(ascii_lines):
+    y = TEXT_Y + i * LINE_H
+    out.append(f'  <tspan x="15" y="{y}">{esc(line)}</tspan>')
+out.append('</text>')
 
-svg_lines.append('</svg>')
+# Right panel
+y = TEXT_Y
+for kind, key, val in stats:
+    if kind == "sep":
+        y += LINE_H
+        continue
 
-with open("readme.svg", "w") as f:
-    f.write("\n".join(svg_lines))
+    if kind == "title":
+        key_px   = TEXT_X + len(key) * CHAR_W
+        dashes_n = max(1, int((RIGHT_EDGE - key_px - CHAR_W) / CHAR_W))
+        out.append(
+            f'<text x="{TEXT_X}" y="{y}">'
+            f'<tspan class="title">{esc(key)}</tspan>'
+            f'<tspan class="dots"> {"─" * dashes_n}</tspan>'
+            f'</text>')
+        y += LINE_H
+        continue
 
-# Update README to use the SVG
-readme = """<div align="center">
-  <img src="readme.svg" alt="Portfolio Terminal">
-</div>
-"""
+    if kind == "sect":
+        key_px   = TEXT_X + len(key) * CHAR_W
+        dashes_n = max(1, int((RIGHT_EDGE - key_px - CHAR_W) / CHAR_W))
+        out.append(
+            f'<text x="{TEXT_X}" y="{y}">'
+            f'<tspan class="title">{esc(key)} </tspan>'
+            f'<tspan class="dots">{"─" * dashes_n}</tspan>'
+            f'</text>')
+        y += LINE_H
+        continue
+
+    # normal row — value right-aligned
+    val_x    = RIGHT_EDGE - len(val) * CHAR_W
+    key_end  = TEXT_X + (len(key) + 1) * CHAR_W
+    gap      = val_x - key_end - CHAR_W
+    dots_n   = max(1, int(gap / CHAR_W))
+    out.append(
+        f'<text x="{TEXT_X}" y="{y}">'
+        f'<tspan class="key">{esc(key)}</tspan>'
+        f'<tspan class="dots"> {"." * dots_n} </tspan>'
+        f'<tspan class="val">{esc(val)}</tspan>'
+        f'</text>')
+    y += LINE_H
+
+out.append('</svg>')
+
+with open("dark_mode.svg", "w", encoding="utf-8") as f:
+    f.write("\n".join(out))
+
 with open("README.md", "w") as f:
-    f.write(readme)
+    f.write(
+        '<a href="https://github.com/SakamotoMrX/SakamotoMrX">\n'
+        '  <picture>\n'
+        '    <source media="(prefers-color-scheme: dark)" srcset="dark_mode.svg">\n'
+        '    <img src="dark_mode.svg" alt="andrahijati terminal profile">\n'
+        '  </picture>\n'
+        '</a>\n'
+    )
+print("Done — dark_mode.svg written!")

@@ -1,3 +1,6 @@
-<div align="center">
-  <img src="readme-banner-v6.png" width="960" alt="Portfolio Terminal">
-</div>
+<a href="https://github.com/SakamotoMrX/SakamotoMrX">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="dark_mode.svg">
+    <img src="dark_mode.svg" alt="andrahijati terminal profile">
+  </picture>
+</a>
