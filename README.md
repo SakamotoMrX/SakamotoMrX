@@ -1,3 +1,3 @@
 <div align="center">
-  <img src="readme-banner-v4.png" width="1100" alt="Portfolio Terminal">
+  <img src="readme-banner-v5.png" width="1200" alt="Portfolio Terminal">
 </div>
