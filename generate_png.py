@@ -2,7 +2,7 @@ from PIL import Image, ImageDraw, ImageFont
 import os
 
 stats = [
-    ("andrahijati@JuniorDevops", "--------------------------------"),
+    ("andrahijati@JuniorDevops", "------------------------------"),
     (". OS:", "Macos, Linux, Windows"),
     (". Uptime:", "15 years, 5 months"),
     (". Host:", "Junior Devops"),
@@ -20,13 +20,13 @@ stats = [
     (". Hobbies.Software:", "Larping Linux"),
     (". Hobbies.Hardware:", "Arduino"),
     (".", ""),
-    ("- Contact", "-----------------------------------------------"),
+    ("- Contact", "----------------------------------------------"),
     (". Email.Personal:", "andrahijati@gmail.com"),
     (". Discord:", "legacyy5030")
 ]
 
 scale = 2
-W, H = 900 * scale, 480 * scale
+W, H = 1000 * scale, 480 * scale
 bg_color = (13, 17, 23)
 border_color = (48, 54, 61)
 
@@ -34,29 +34,32 @@ im = Image.new('RGB', (W, H), bg_color)
 draw = ImageDraw.Draw(im)
 draw.rounded_rectangle([2, 2, W-4, H-4], radius=10*scale, outline=border_color, width=2)
 
+FONT_SIZE = 13 * scale
 try:
-    font_bold = ImageFont.truetype("/System/Library/Fonts/Menlo.ttc", 14 * scale, index=1)
-    font = ImageFont.truetype("/System/Library/Fonts/Menlo.ttc", 14 * scale)
+    font_bold = ImageFont.truetype("/System/Library/Fonts/Menlo.ttc", FONT_SIZE, index=1)
+    font = ImageFont.truetype("/System/Library/Fonts/Menlo.ttc", FONT_SIZE)
 except:
     font_bold = ImageFont.load_default()
     font = ImageFont.load_default()
 
+IMG_W = 380 * scale
+IMG_H = 450 * scale
 try:
     prof = Image.open("profile.png")
-    # Make image larger (340x460 instead of 300x420)
-    prof.thumbnail((340 * scale, 460 * scale), Image.Resampling.LANCZOS)
+    prof.thumbnail((IMG_W, IMG_H), Image.Resampling.LANCZOS)
     prof = prof.convert("RGBA")
-    
-    # Paste closer to the left margin (10 instead of 30)
-    x_off = 10 * scale + (340 * scale - prof.width) // 2
-    y_off = 10 * scale + (460 * scale - prof.height) // 2
+    x_off = 15 * scale + (IMG_W - prof.width) // 2
+    y_off = 15 * scale + (IMG_H - prof.height) // 2
     im.paste(prof, (x_off, y_off), prof)
 except Exception as e:
     print(f"Image error: {e}")
 
-# Move text to the left (330 instead of 360)
-x_start = 330 * scale
-y = 45 * scale
+x_start = 400 * scale
+y = 40 * scale
+line_height = 19 * scale
+
+# Fixed value column: 570px from left edge (170px from text start)
+val_col = 570 * scale
 
 for key, val in stats:
     if key == "andrahijati@JuniorDevops":
@@ -71,24 +74,16 @@ for key, val in stats:
         pass
     else:
         draw.text((x_start, y), key, font=font, fill=(227, 179, 65))
-        
-        # Increase distance between key and value to fill space on the right (260 instead of 240)
-        val_x = x_start + (260 * scale)
-        key_width = draw.textlength(key + " ", font=font)
+        key_end = x_start + draw.textlength(key + " ", font=font)
         dot_width = draw.textlength(".", font=font)
-        
-        dots_space = val_x - (x_start + key_width) - (10 * scale)
-        dots_count = int(dots_space / dot_width)
-        if dots_count < 1: dots_count = 1
+        dots_count = max(1, int((val_col - key_end - 8 * scale) / dot_width))
         dots = "." * dots_count
-        
-        draw.text((x_start + key_width, y), dots, font=font, fill=(139, 148, 158))
-        draw.text((val_x, y), val, font=font, fill=(121, 192, 255))
-        
-    y += 20 * scale
+        draw.text((key_end, y), dots, font=font, fill=(139, 148, 158))
+        draw.text((val_col, y), val, font=font, fill=(121, 192, 255))
+    y += line_height
 
-im.save("readme-banner-v3.png")
+im.save("readme-banner-v4.png")
 
 with open("README.md", "w") as f:
-    f.write('<div align="center">\n  <img src="readme-banner-v3.png" width="900" alt="Portfolio Terminal">\n</div>\n')
+    f.write('<div align="center">\n  <img src="readme-banner-v4.png" width="1000" alt="Portfolio Terminal">\n</div>\n')
 
