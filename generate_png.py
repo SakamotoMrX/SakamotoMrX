@@ -1,95 +1,124 @@
 from PIL import Image, ImageDraw, ImageFont
 import os
 
+# Stats: (key, value) - values will be right-aligned
 stats = [
-    ("andrahijati@JuniorDevops", "------------------------------"),
+    ("andrahijati@JuniorDevops", ""),       # title row, special
     (". OS:", "Macos, Linux, Windows"),
     (". Uptime:", "15 years, 5 months"),
     (". Host:", "Junior Devops"),
     (". Shell:", "Jakarta, Indonesia"),
     (". IDE:", "Antigravity IDE, Vim, Nvim, Lazygit"),
-    (".", ""),
+    ("", ""),
     (". Languages.Programming:", "Bash"),
     (". Languages.Computer:", "YAML"),
     (". Languages.Real:", "Indonesia, English"),
-    (".", ""),
+    ("", ""),
     (". Skills.System:", "LinuxSysAdmin, VM, Containerization"),
     (". Skills.WebDev:", "Basic Website, Git & GitHub, Deploying"),
     (". Skills.Process:", "SDLC & Agile"),
-    (".", ""),
+    ("", ""),
     (". Hobbies.Software:", "Larping Linux"),
     (". Hobbies.Hardware:", "Arduino"),
-    (".", ""),
-    ("- Contact", "----------------------------------------------"),
+    ("", ""),
+    ("- Contact", ""),                      # section header, special
     (". Email.Personal:", "andrahijati@gmail.com"),
-    (". Discord:", "legacyy5030")
+    (". Discord:", "legacyy5030"),
 ]
 
-scale = 2
-W, H = 1200 * scale, 500 * scale
-bg_color = (13, 17, 23)
-border_color = (48, 54, 61)
+SCALE = 2
+# Canvas dimensions (will be displayed at 1x in README)
+W  = 960  * SCALE
+H  = 500  * SCALE
+PAD_TOP   = 28 * SCALE
+PAD_BOT   = 28 * SCALE
+IMG_AREA_W = 360 * SCALE   # left section for image
+TEXT_PAD_L = 20 * SCALE    # gap between image and text
+TEXT_START = IMG_AREA_W + TEXT_PAD_L
+TEXT_RIGHT = W - 28 * SCALE  # right edge of text
 
-im = Image.new('RGB', (W, H), bg_color)
+BG     = (13,  17,  23)
+BORDER = (48,  54,  61)
+C_TITLE = (201, 209, 217)   # white-ish
+C_KEY   = (227, 179,  65)   # orange/yellow
+C_DOTS  = (100, 110, 120)   # dark gray
+C_VAL   = (201, 209, 217)   # white (like the reference)
+C_DASH  = (100, 110, 120)   # section separator dashes
+
+im   = Image.new('RGB', (W, H), BG)
 draw = ImageDraw.Draw(im)
-draw.rounded_rectangle([2, 2, W-4, H-4], radius=10*scale, outline=border_color, width=2)
+draw.rounded_rectangle([1, 1, W-2, H-2], radius=10*SCALE, outline=BORDER, width=2)
 
-# Bigger font: 15px (was 13px)
-FONT_SIZE = 15 * scale
+# Use Menlo bold for everything (terminal feel, bigger = 17px)
+FSIZE = 17 * SCALE
 try:
-    font_bold = ImageFont.truetype("/System/Library/Fonts/Menlo.ttc", FONT_SIZE, index=1)
-    font = ImageFont.truetype("/System/Library/Fonts/Menlo.ttc", FONT_SIZE)
+    font      = ImageFont.truetype("/System/Library/Fonts/Menlo.ttc", FSIZE, index=0)
+    font_bold = ImageFont.truetype("/System/Library/Fonts/Menlo.ttc", FSIZE, index=1)
 except:
-    font_bold = ImageFont.load_default()
-    font = ImageFont.load_default()
+    font = font_bold = ImageFont.load_default()
 
-IMG_W = 430 * scale
-IMG_H = 470 * scale
+# Paste profile image — fill the left area
 try:
-    prof = Image.open("profile.png")
-    prof.thumbnail((IMG_W, IMG_H), Image.Resampling.LANCZOS)
-    prof = prof.convert("RGBA")
-    x_off = 15 * scale + (IMG_W - prof.width) // 2
-    y_off = 15 * scale + (IMG_H - prof.height) // 2
-    im.paste(prof, (x_off, y_off), prof)
+    prof = Image.open("profile.png").convert("RGBA")
+    prof.thumbnail((IMG_AREA_W, H - PAD_TOP - PAD_BOT), Image.Resampling.LANCZOS)
+    x_img = (IMG_AREA_W - prof.width) // 2
+    y_img = PAD_TOP + (H - PAD_TOP - PAD_BOT - prof.height) // 2
+    im.paste(prof, (x_img, y_img), prof)
 except Exception as e:
     print(f"Image error: {e}")
 
-x_start = 455 * scale
-y = 40 * scale
-line_height = 21 * scale
+# ---- measure dot width once ----
+dot_w = draw.textlength(".", font=font)
+sp_w  = draw.textlength(" ", font=font)
 
-# Dynamically compute the val column based on ACTUAL pixel width of the longest key
-longest_key = ". Languages.Programming:"
-longest_key_w = draw.textlength(longest_key + " ", font=font)
-# Add a fixed gap (dots width minimum ~8 dots)
-dot_width = draw.textlength(".", font=font)
-val_col = x_start + int(longest_key_w) + int(dot_width * 8)
+LINE_H = 21 * SCALE
+y = PAD_TOP
 
 for key, val in stats:
-    if key == "andrahijati@JuniorDevops":
-        draw.text((x_start, y), key, font=font_bold, fill=(201, 209, 217))
-        offset = draw.textlength(key + " ", font=font_bold)
-        draw.text((x_start + offset, y), val, font=font, fill=(139, 148, 158))
-    elif key.startswith("- "):
-        draw.text((x_start, y), key, font=font_bold, fill=(201, 209, 217))
-        offset = draw.textlength(key + " ", font=font_bold)
-        draw.text((x_start + offset, y), val, font=font, fill=(139, 148, 158))
-    elif key == ".":
-        pass
-    else:
-        draw.text((x_start, y), key, font=font, fill=(227, 179, 65))
-        key_end = x_start + draw.textlength(key + " ", font=font)
-        # Fill dots from end of key to val_col
-        dots_space = val_col - key_end
-        dots_count = max(1, int(dots_space / dot_width))
-        dots = "." * dots_count
-        draw.text((key_end, y), dots, font=font, fill=(139, 148, 158))
-        draw.text((val_col + int(dot_width), y), val, font=font, fill=(121, 192, 255))
-    y += line_height
+    # Empty separator line
+    if key == "" and val == "":
+        y += LINE_H
+        continue
 
-im.save("readme-banner-v5.png")
+    # Title row: "andrahijati@JuniorDevops --------..."
+    if key == "andrahijati@JuniorDevops":
+        title_w = draw.textlength(key, font=font_bold)
+        draw.text((TEXT_START, y), key, font=font_bold, fill=C_TITLE)
+        # fill rest of line with dashes
+        dash_start = TEXT_START + title_w + sp_w
+        dash_count = max(1, int((TEXT_RIGHT - dash_start) / dot_w))
+        draw.text((dash_start, y), "─" * dash_count, font=font, fill=C_DASH)
+        y += LINE_H
+        continue
+
+    # Section header: "- Contact --------..."
+    if key.startswith("- "):
+        hdr_w = draw.textlength(key, font=font_bold)
+        draw.text((TEXT_START, y), key, font=font_bold, fill=C_TITLE)
+        dash_start = TEXT_START + hdr_w + sp_w
+        dash_count = max(1, int((TEXT_RIGHT - dash_start) / dot_w))
+        draw.text((dash_start, y), "─" * dash_count, font=font, fill=C_DASH)
+        y += LINE_H
+        continue
+
+    # Normal row: key ... value (value right-aligned)
+    key_w = draw.textlength(key + " ", font=font)
+    val_w = draw.textlength(val,       font=font)
+
+    # dots fill the middle
+    dots_space = TEXT_RIGHT - (TEXT_START + key_w) - val_w - sp_w
+    dots_count = max(1, int(dots_space / dot_w))
+    dots = "." * dots_count
+
+    draw.text((TEXT_START, y),                                   key,  font=font, fill=C_KEY)
+    draw.text((TEXT_START + key_w, y),                           dots, font=font, fill=C_DOTS)
+    draw.text((TEXT_RIGHT - val_w, y),                           val,  font=font, fill=C_VAL)
+
+    y += LINE_H
+
+im.save("readme-banner-v6.png")
 
 with open("README.md", "w") as f:
-    f.write('<div align="center">\n  <img src="readme-banner-v5.png" width="1200" alt="Portfolio Terminal">\n</div>\n')
+    f.write('<div align="center">\n  <img src="readme-banner-v6.png" width="960" alt="Portfolio Terminal">\n</div>\n')
 
+print("Done!")
