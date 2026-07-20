@@ -25,37 +25,35 @@ stats = [
     (". Discord:", "legacyy5030")
 ]
 
-W, H = 900, 480
+scale = 2
+W, H = 900 * scale, 480 * scale
 bg_color = (13, 17, 23)
 border_color = (48, 54, 61)
 
 im = Image.new('RGB', (W, H), bg_color)
 draw = ImageDraw.Draw(im)
-draw.rounded_rectangle([1, 1, W-2, H-2], radius=10, outline=border_color, width=1)
+draw.rounded_rectangle([2, 2, W-4, H-4], radius=10*scale, outline=border_color, width=2)
 
 try:
-    font_bold = ImageFont.truetype("/System/Library/Fonts/Menlo.ttc", 14, index=1)
-    font = ImageFont.truetype("/System/Library/Fonts/Menlo.ttc", 14)
+    font_bold = ImageFont.truetype("/System/Library/Fonts/Menlo.ttc", 14 * scale, index=1)
+    font = ImageFont.truetype("/System/Library/Fonts/Menlo.ttc", 14 * scale)
 except:
     font_bold = ImageFont.load_default()
     font = ImageFont.load_default()
 
 try:
     prof = Image.open("profile.png")
-    prof.thumbnail((300, 420), Image.Resampling.LANCZOS)
+    prof.thumbnail((300 * scale, 420 * scale), Image.Resampling.LANCZOS)
     prof = prof.convert("RGBA")
     
-    # create a transparent bg image for paste mask if needed
-    tmp = Image.new("RGBA", (300, 420), (255,255,255,0))
-    # calculate offset to center
-    x_off = 30 + (300 - prof.width) // 2
-    y_off = 30 + (420 - prof.height) // 2
+    x_off = 30 * scale + (300 * scale - prof.width) // 2
+    y_off = 30 * scale + (420 * scale - prof.height) // 2
     im.paste(prof, (x_off, y_off), prof)
 except Exception as e:
     print(f"Image error: {e}")
 
-x_start = 360
-y = 45
+x_start = 360 * scale
+y = 45 * scale
 
 for key, val in stats:
     if key == "andrahijati@JuniorDevops":
@@ -72,23 +70,26 @@ for key, val in stats:
         # key
         draw.text((x_start, y), key, font=font, fill=(227, 179, 65))
         
-        # calculate dots
-        total_len = 50
-        dots_count = max(1, total_len - len(key) - len(val))
+        # calc dots manually since textlength might not align perfectly for spaces
+        # actually, just use absolute positioning for value so it's perfectly aligned!
+        val_x = x_start + (240 * scale)
+        # draw dots between key and val
+        key_width = draw.textlength(key + " ", font=font)
+        dot_width = draw.textlength(".", font=font)
+        
+        dots_space = val_x - (x_start + key_width) - (10 * scale)
+        dots_count = int(dots_space / dot_width)
+        if dots_count < 1: dots_count = 1
         dots = "." * dots_count
         
-        # draw dots
-        offset1 = draw.textlength(key + " ", font=font)
-        draw.text((x_start + offset1, y), dots, font=font, fill=(139, 148, 158))
+        draw.text((x_start + key_width, y), dots, font=font, fill=(139, 148, 158))
+        draw.text((val_x, y), val, font=font, fill=(121, 192, 255))
         
-        # val
-        offset2 = draw.textlength(key + " " + dots + " ", font=font)
-        draw.text((x_start + offset2, y), val, font=font, fill=(121, 192, 255))
-        
-    y += 20
+    y += 20 * scale
 
 im.save("readme-banner.png")
 
+# Write README.md with explicit width to trigger retina scaling
 with open("README.md", "w") as f:
-    f.write('<div align="center">\n  <img src="readme-banner.png" alt="Portfolio Terminal">\n</div>\n')
+    f.write('<div align="center">\n  <img src="readme-banner.png" width="900" alt="Portfolio Terminal">\n</div>\n')
 
