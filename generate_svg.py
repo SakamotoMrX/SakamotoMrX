@@ -1,16 +1,12 @@
-from PIL import Image
-import ascii_magic
 import html
 
 # ─────────────────── CONFIG ────────────────────────────────────────────────
 SVG_W    = 985
 SVG_H    = 530
-FONT_SZ  = 16
-LINE_H   = 20
-ASCII_COLS = 38
-ASCII_ROWS = 24
-TEXT_X   = 405
-TEXT_Y   = 30
+FONT_SZ  = 18          # bigger since full width
+LINE_H   = 22
+PAD_L    = 20          # left padding
+TEXT_Y   = 35
 BG       = "#161b22"
 C_TITLE  = "#c9d1d9"
 C_KEY    = "#ffa657"
@@ -42,24 +38,12 @@ stats = [
     ("row",   ". Discord:",               "legacyy5030"),
 ]
 
-# ─────────────────── ASCII art ─────────────────────────────────────────────
-ascii_lines = []
-try:
-    art = ascii_magic.AsciiArt.from_image("profile.png")
-    raw = art.to_ascii(columns=ASCII_COLS, width_ratio=2.2, monochrome=True)
-    ascii_lines = raw.splitlines()[:ASCII_ROWS]
-    while len(ascii_lines) < ASCII_ROWS:
-        ascii_lines.append("")
-    print(f"ASCII art generated: {len(ascii_lines)} lines")
-except Exception as e:
-    print(f"ASCII error: {e}")
-    ascii_lines = ["" for _ in range(ASCII_ROWS)]
-
 # ─────────────────── SVG BUILD ─────────────────────────────────────────────
 def esc(s): return html.escape(str(s))
 
-CHAR_W     = 9.62   # Consolas 16px char width
-RIGHT_EDGE = SVG_W - 15
+# Consolas 18px: approx 10.8px per char
+CHAR_W     = 10.8
+RIGHT_EDGE = SVG_W - PAD_L
 
 out = []
 out.append(f'''<?xml version='1.0' encoding='UTF-8'?>
@@ -78,14 +62,6 @@ text, tspan {{white-space: pre;}}
 </style>
 <rect width="{SVG_W}px" height="{SVG_H}px" fill="{BG}" rx="12"/>''')
 
-# ASCII left panel
-out.append(f'<text x="15" y="{TEXT_Y}" fill="{C_TITLE}">')
-for i, line in enumerate(ascii_lines):
-    y = TEXT_Y + i * LINE_H
-    out.append(f'  <tspan x="15" y="{y}">{esc(line)}</tspan>')
-out.append('</text>')
-
-# Right panel
 y = TEXT_Y
 for kind, key, val in stats:
     if kind == "sep":
@@ -93,10 +69,10 @@ for kind, key, val in stats:
         continue
 
     if kind == "title":
-        key_px   = TEXT_X + len(key) * CHAR_W
+        key_px   = PAD_L + len(key) * CHAR_W
         dashes_n = max(1, int((RIGHT_EDGE - key_px - CHAR_W) / CHAR_W))
         out.append(
-            f'<text x="{TEXT_X}" y="{y}">'
+            f'<text x="{PAD_L}" y="{y}">'
             f'<tspan class="title">{esc(key)}</tspan>'
             f'<tspan class="dots"> {"─" * dashes_n}</tspan>'
             f'</text>')
@@ -104,10 +80,10 @@ for kind, key, val in stats:
         continue
 
     if kind == "sect":
-        key_px   = TEXT_X + len(key) * CHAR_W
+        key_px   = PAD_L + len(key) * CHAR_W
         dashes_n = max(1, int((RIGHT_EDGE - key_px - CHAR_W) / CHAR_W))
         out.append(
-            f'<text x="{TEXT_X}" y="{y}">'
+            f'<text x="{PAD_L}" y="{y}">'
             f'<tspan class="title">{esc(key)} </tspan>'
             f'<tspan class="dots">{"─" * dashes_n}</tspan>'
             f'</text>')
@@ -115,12 +91,12 @@ for kind, key, val in stats:
         continue
 
     # normal row — value right-aligned
-    val_x    = RIGHT_EDGE - len(val) * CHAR_W
-    key_end  = TEXT_X + (len(key) + 1) * CHAR_W
-    gap      = val_x - key_end - CHAR_W
-    dots_n   = max(1, int(gap / CHAR_W))
+    val_x   = RIGHT_EDGE - len(val) * CHAR_W
+    key_end = PAD_L + (len(key) + 1) * CHAR_W
+    gap     = val_x - key_end - CHAR_W
+    dots_n  = max(1, int(gap / CHAR_W))
     out.append(
-        f'<text x="{TEXT_X}" y="{y}">'
+        f'<text x="{PAD_L}" y="{y}">'
         f'<tspan class="key">{esc(key)}</tspan>'
         f'<tspan class="dots"> {"." * dots_n} </tspan>'
         f'<tspan class="val">{esc(val)}</tspan>'
@@ -141,4 +117,4 @@ with open("README.md", "w") as f:
         '  </picture>\n'
         '</a>\n'
     )
-print("Done — dark_mode.svg written!")
+print(f"Done! Final y={y}, SVG_H={SVG_H}")
