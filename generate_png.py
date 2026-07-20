@@ -43,16 +43,19 @@ except:
 
 try:
     prof = Image.open("profile.png")
-    prof.thumbnail((300 * scale, 420 * scale), Image.Resampling.LANCZOS)
+    # Make image larger (340x460 instead of 300x420)
+    prof.thumbnail((340 * scale, 460 * scale), Image.Resampling.LANCZOS)
     prof = prof.convert("RGBA")
     
-    x_off = 30 * scale + (300 * scale - prof.width) // 2
-    y_off = 30 * scale + (420 * scale - prof.height) // 2
+    # Paste closer to the left margin (10 instead of 30)
+    x_off = 10 * scale + (340 * scale - prof.width) // 2
+    y_off = 10 * scale + (460 * scale - prof.height) // 2
     im.paste(prof, (x_off, y_off), prof)
 except Exception as e:
     print(f"Image error: {e}")
 
-x_start = 360 * scale
+# Move text to the left (330 instead of 360)
+x_start = 330 * scale
 y = 45 * scale
 
 for key, val in stats:
@@ -69,7 +72,8 @@ for key, val in stats:
     else:
         draw.text((x_start, y), key, font=font, fill=(227, 179, 65))
         
-        val_x = x_start + (240 * scale)
+        # Increase distance between key and value to fill space on the right (260 instead of 240)
+        val_x = x_start + (260 * scale)
         key_width = draw.textlength(key + " ", font=font)
         dot_width = draw.textlength(".", font=font)
         
@@ -83,8 +87,8 @@ for key, val in stats:
         
     y += 20 * scale
 
-im.save("readme-banner-v2.png")
+im.save("readme-banner-v3.png")
 
 with open("README.md", "w") as f:
-    f.write('<div align="center">\n  <img src="readme-banner-v2.png" width="900" alt="Portfolio Terminal">\n</div>\n')
+    f.write('<div align="center">\n  <img src="readme-banner-v3.png" width="900" alt="Portfolio Terminal">\n</div>\n')
 
