@@ -1,3 +1,3 @@
 <div align="center">
-  <img src="readme.svg" alt="Portfolio Terminal">
+  <img src="readme-banner.png" alt="Portfolio Terminal">
 </div>
