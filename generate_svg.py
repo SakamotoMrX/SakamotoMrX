@@ -109,13 +109,4 @@ out.append('</svg>')
 with open("terminal_profile.svg", "w", encoding="utf-8") as f:
     f.write("\n".join(out))
 
-with open("README.md", "w") as f:
-    f.write(
-        '<a href="https://github.com/SakamotoMrX/SakamotoMrX">\n'
-        '  <picture>\n'
-        '    <source media="(prefers-color-scheme: dark)" srcset="terminal_profile.svg">\n'
-        '    <img src="terminal_profile.svg" alt="andrahijati terminal profile">\n'
-        '  </picture>\n'
-        '</a>\n'
-    )
 print(f"Done! Final y={y}, SVG_H={SVG_H}")
