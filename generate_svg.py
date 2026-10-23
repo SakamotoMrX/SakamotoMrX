@@ -5,6 +5,7 @@
   assets/pipeline.svg   looping deploy pipeline
   assets/rack.svg       tech stack as a server rack
   assets/telemetry.svg  Grafana-style panel fed by the GitHub API
+each with a narrower *-mobile.svg twin that README.md swaps in on phones.
 
 Run with a token so the numbers are live:
   GITHUB_TOKEN=$(gh auth token) python3 generate_svg.py
@@ -31,7 +32,8 @@ ASSETS = ROOT / "assets"
 ICONS  = ROOT / "icons"
 USER   = "SakamotoMrX"
 BIRTH  = dt.date(2011, 2, 20)   # drives the "Uptime" line; adjust if off
-W      = 985
+W      = 985                    # desktop width
+W_MOBILE = 420                  # served below 600px via <picture>
 
 FONT = "'JetBrains Mono','Fira Code','SF Mono',Menlo,Consolas,'DejaVu Sans Mono',monospace"
 CW   = 0.6                      # monospace advance width, in em
@@ -192,10 +194,11 @@ def uptime(today=None):
 
 
 # ─────────────────── HERO: neofetch session ────────────────────────────────
-def hero(st):
-    fs, lh, pad = 15, 21, 24
+def hero(st, w=W):
+    mobile = w < 600
+    fs, lh, pad = (14, 20, 16) if mobile else (15, 21, 24)
     cw = fs * CW
-    cols = int((W - 2 * pad) / cw)
+    cols = int((w - 2 * pad) / cw)
     X = lambda col: pad + col * cw
 
     rows = [
@@ -249,11 +252,27 @@ def hero(st):
             g += [T(X(0), y, key, fs, C["bright"], weight="bold"),
                   T(X(len(key) + 1), y, "─" * (cols - len(key) - 1), fs, C["dim"])]
         else:
-            g += [T(X(0), y, key, fs, C["orange"]),
-                  T(X(cols), y, val, fs, C["cyan"], anchor="end")]
-            n = cols - len(key) - len(val) - 2
-            if n > 0:
-                g.append(T(X(len(key) + 1), y, "." * n, fs, C["dim"]))
+            g.append(T(X(0), y, key, fs, C["orange"]))
+            lead = len(key)
+            if lead + len(val) + 2 > cols:  # too narrow: value drops below, wrapped on ", "
+                parts, line = [], ""
+                for item in val.split(", "):
+                    cand = f"{line}, {item}" if line else item
+                    if len(cand) + 1 > cols - 3 and line:
+                        parts.append(line + ",")
+                        cand = item
+                    line = cand
+                vals, lead = parts + [line], 1
+                y += lh
+            else:
+                vals = [val]
+            for j, v in enumerate(vals):
+                if j:
+                    y += lh
+                g.append(T(X(cols), y, v, fs, C["cyan"], anchor="end"))
+                n = cols - lead - len(v) - 2
+                if n > 0 and len(vals) == 1:
+                    g.append(T(X(lead + 1), y, "." * n, fs, C["dim"]))
         out.append(f'<g class="r" style="{delay}">{"".join(g)}</g>')
         y += lh
 
@@ -300,7 +319,7 @@ def hero(st):
         "@keyframes scan{from{transform:translateY(0)}}"
         + type_css
     )
-    wdefs, wbody = window(W, H, "andra@SakamotoMrX — zsh — ssh")
+    wdefs, wbody = window(w, H, "andra@SakamotoMrX — zsh" if mobile else "andra@SakamotoMrX — zsh — ssh")
     defs = wdefs + (
         '<linearGradient id="sg" x1="0" y1="0" x2="0" y2="1">'
         '<stop offset="0" stop-color="#58a6ff" stop-opacity="0"/>'
@@ -308,33 +327,44 @@ def hero(st):
         '<stop offset="1" stop-color="#58a6ff" stop-opacity=".12"/></linearGradient>'
     )
     body = (wbody + prompt + "".join(out)
-            + f'<rect class="scan" y="-120" width="{W}" height="120" fill="url(#sg)"/>'
-            + border(W, H))
-    return svg(W, H, "andra@SakamotoMrX neofetch", css, body, defs)
+            + f'<rect class="scan" y="-120" width="{w}" height="120" fill="url(#sg)"/>'
+            + border(w, H))
+    return svg(w, H, "andra@SakamotoMrX neofetch", css, body, defs)
 
 
 # ─────────────────── PIPELINE: looping deploy ──────────────────────────────
-def pipeline(st):
-    H = 230
+def pipeline(st, w=W):
+    """Horizontal on desktop; on mobile the stages stack vertically."""
+    mobile = w < 600
     stages = [
         ("commit",  "git",           "git push",        "pushing a8f3c1e → main"),
         ("build",   "githubactions", "actions",         "building on ubuntu-latest"),
-        ("test",    "gnubash",       "bash -euo",       "smoke tests: set -euo pipefail && ./test.sh"),
+        ("test",    "gnubash",       "bash -euo",       "set -euo pipefail && ./test.sh"),
+        ("preview", "vercel",        "vercel deploy",   "preview ready → review the URL before prod"),
         ("package", "docker",        "docker build",    "docker build -t andra/app:latest ."),
-        ("deploy",  "kubernetes",    "kubectl apply",   "kubectl rollout status deploy/app"),
-        ("ship",    "vercel",        "vercel --prod",   "vercel --prod  →  aliasing production"),
+        ("release", "kubernetes",    "kubectl rollout", "kubectl rollout status deploy/app -n prod"),
     ]
-    n, bw, bh, margin = len(stages), 128, 86, 28
-    gap = (W - 2 * margin - n * bw) / (n - 1)
-    y0 = 58
+    n = len(stages)
+    y0 = 52 if mobile else 58
+    if mobile:
+        margin, bh, gap = 16, 52, 16
+        bw = w - 2 * margin
+        xs = [margin] * n
+        ys = [y0 + i * (bh + gap) for i in range(n)]
+        cx = [margin + 24] * n
+        cy = [y + bh / 2 for y in ys]
+    else:
+        margin, bw, bh = 28, 128, 86
+        gap = (w - 2 * margin - n * bw) / (n - 1)
+        xs = [margin + i * (bw + gap) for i in range(n)]
+        ys = [y0] * n
+        cx = [x + bw / 2 for x in xs]
+        cy = [y0 + bh / 2] * n
     cyc, run = 10.5, 0.9
     starts = [0.5 + i * 1.4 for i in range(n)]
     ends = [s + run for s in starts]
     done, hold = ends[-1], cyc - 0.5
     p = lambda t: pct(t, cyc)
-    xs = [margin + i * (bw + gap) for i in range(n)]
-    cx = [x + bw / 2 for x in xs]
-    cy = y0 + bh / 2
     rng = random.Random(7)
 
     css = [
@@ -348,21 +378,22 @@ def pipeline(st):
     for i in range(n - 1):
         css.append(f"@keyframes c{i}{{0%,{p(starts[i + 1])}{{stroke:{C['line']}}}"
                    f"{p(starts[i + 1] + .05)},{p(hold)}{{stroke:{C['green']}}}100%{{stroke:{C['line']}}}}}")
-        body.append(f'<path class="lp" style="animation-name:c{i}" d="M{xs[i] + bw:.1f} {cy}H{xs[i + 1]:.1f}" '
+        seg = (f"M{cx[i]} {ys[i] + bh}V{ys[i + 1]}" if mobile else f"M{xs[i] + bw:.1f} {cy[i]}H{xs[i + 1]:.1f}")
+        body.append(f'<path class="lp" style="animation-name:c{i}" d="{seg}" '
                     f'stroke="{C["green"]}" stroke-width="2" stroke-dasharray="4 4"/>')
-    frames = [(0, cx[0])]
+    frames = [(0, 0)]
     for i in range(n):
-        frames += [(starts[i], cx[i]), (ends[i], cx[i])]
-    frames.append((cyc, cx[-1]))
+        frames += [(starts[i], i), (ends[i], i)]
+    frames.append((cyc, n - 1))
     css.append("@keyframes pk{" + "".join(
-        f"{p(t)}{{transform:translateX({x:.1f}px)}}" for t, x in frames) + "}")
+        f"{p(t)}{{transform:translate({cx[i]:.1f}px,{cy[i]:.1f}px)}}" for t, i in frames) + "}")
     css.append(f"@keyframes pko{{0%,{p(starts[0])}{{opacity:0}}{p(starts[0] + .05)},{p(done)}{{opacity:1}}"
                f"{p(done + .05)},100%{{opacity:0}}}}")
     body.append(f'<g class="lp" style="animation-name:pk,pko;opacity:0">'
-                f'<circle cy="{cy}" r="9" fill="url(#glow)"/><circle cy="{cy}" r="3" fill="{C["green"]}"/></g>')
+                f'<circle r="9" fill="url(#glow)"/><circle r="3" fill="{C["green"]}"/></g>')
 
     for i, (name, slug, cmd, _) in enumerate(stages):
-        x, s, e = xs[i], starts[i], ends[i]
+        x, y, s, e = xs[i], ys[i], starts[i], ends[i]
         css.append(
             f"@keyframes b{i}{{0%,{p(s)}{{stroke:{C['line']}}}{p(s + .05)},{p(e)}{{stroke:{C['yellow']}}}"
             f"{p(e + .05)},{p(hold)}{{stroke:{C['green']}}}100%{{stroke:{C['line']}}}}}"
@@ -372,21 +403,31 @@ def pipeline(st):
             f"@keyframes k{i}{{0%,{p(e)}{{opacity:0}}{p(e + .05)},{p(hold)}{{opacity:1}}100%{{opacity:0}}}}"
         )
         secs = f"{rng.randint(2, 19)}s"
+        if mobile:
+            text = (icon(slug, x + 14, y + 16, 20)
+                    + T(x + 46, y + 23, name, 14, C["bright"], weight="bold")
+                    + T(x + 46, y + 40, cmd, 11, C["muted"])
+                    + T(x + 46 + 17 * 6.6, y + 40, f"job {i + 1}/{n}", 10, C["dim"]))
+            dot, done_xy = (x + bw - 20, y + 20), (x + bw - 12, y + 40)
+        else:
+            text = (icon(slug, x + 14, y + 14, 20)
+                    + T(x + 44, y + 30, name, 14, C["bright"], weight="bold")
+                    + T(x + 14, y + 55, cmd, 11, C["muted"])
+                    + T(x + 14, y + 75, f"job {i + 1}/{n}", 10, C["dim"]))
+            dot, done_xy = (x + bw - 18, y + 22), (x + bw - 14, y + 75)
         body.append(
-            f'<rect class="lp" style="animation-name:b{i}" x="{x:.1f}" y="{y0}" width="{bw}" height="{bh}" rx="8" '
+            f'<rect class="lp" style="animation-name:b{i}" x="{x:.1f}" y="{y}" width="{bw}" height="{bh}" rx="8" '
             f'fill="{C["panel"]}" stroke="{C["green"]}" stroke-width="1.5"/>'
-            + icon(slug, x + 14, y0 + 14, 20)
-            + T(x + 44, y0 + 30, name, 14, C["bright"], weight="bold")
-            + T(x + 14, y0 + 55, cmd, 11, C["muted"])
-            + T(x + 14, y0 + 75, f"job {i + 1}/{n}", 10, C["dim"])
-            + f'<circle class="lp" style="animation-name:d{i}" cx="{x + bw - 18:.1f}" cy="{y0 + 22}" r="4.5" fill="{C["green"]}"/>'
-            + f'<g class="lp" style="animation-name:r{i};opacity:0"><circle class="spin" cx="{x + bw - 18:.1f}" cy="{y0 + 22}" r="9" '
+            + text
+            + f'<circle class="lp" style="animation-name:d{i}" cx="{dot[0]:.1f}" cy="{dot[1]}" r="4.5" fill="{C["green"]}"/>'
+            + f'<g class="lp" style="animation-name:r{i};opacity:0"><circle class="spin" cx="{dot[0]:.1f}" cy="{dot[1]}" r="9" '
               f'fill="none" stroke="{C["yellow"]}" stroke-width="1.6" stroke-dasharray="14 43" stroke-linecap="round"/></g>'
-            + f'<g class="lp" style="animation-name:k{i}">' + T(x + bw - 14, y0 + 75, f"✓ {secs}", 11, C["green"], anchor="end") + "</g>"
+            + f'<g class="lp" style="animation-name:k{i}">' + T(*done_xy, f"✓ {secs}", 11, C["green"], anchor="end") + "</g>"
         )
 
     # deploy log
-    ly = y0 + bh + 34
+    ly = ys[-1] + bh + 34
+    lfs = 12 if mobile else 13
     body.append(T(margin, ly, "➜", 13, C["green"], weight="bold") + T(margin + 2 * 7.8, ly, "~", 13, C["cyan"], weight="bold")
                 + T(margin + 4 * 7.8, ly, "./deploy --prod --boring", 13, C["bright"]))
     ly += 24
@@ -395,15 +436,18 @@ def pipeline(st):
         css.append(f"@keyframes m{i}{{0%,{p(starts[i])}{{opacity:0}}{p(starts[i] + .05)},{p(nxt)}{{opacity:1}}"
                    f"{p(nxt + .05)},100%{{opacity:0}}}}")
         body.append(f'<g class="lp" style="animation-name:m{i};opacity:0">'
-                    + T(margin, ly, f"[{i + 1}/{n}] {msg}", 13, C["yellow"]) + "</g>")
+                    + T(margin, ly, f"[{i + 1}/{n}] {msg}", lfs, C["yellow"]) + "</g>")
     css.append(f"@keyframes mf{{0%,{p(done)}{{opacity:0}}{p(done + .05)},{p(hold)}{{opacity:1}}100%{{opacity:0}}}}")
     body.append('<g class="lp" style="animation-name:mf">'
-                + T(margin, ly, "✓ deployed to prod — nothing broke. the servers stay boring.", 13, C["green"]) + "</g>")
+                + T(margin, ly, "✓ released to prod. nothing broke. still boring." if mobile
+                    else "✓ released to prod — nothing broke. the servers stay boring.", lfs, C["green"]) + "</g>")
 
-    wdefs, wbody = window(W, H, f"deploy.yml — main — run #{st['contributions']}")
+    H = int(ly + 22)
+    wdefs, wbody = window(w, H, f"deploy.yml — run #{st['contributions']}" if mobile
+                          else f"deploy.yml — main — run #{st['contributions']}")
     defs = wdefs + ('<radialGradient id="glow"><stop offset="0" stop-color="#3fb950" stop-opacity=".7"/>'
                     '<stop offset="1" stop-color="#3fb950" stop-opacity="0"/></radialGradient>')
-    return svg(W, H, "deploy pipeline", "".join(css), wbody + "".join(body) + border(W, H), defs)
+    return svg(w, H, "deploy pipeline", "".join(css), wbody + "".join(body) + border(w, H), defs)
 
 
 # ─────────────────── RACK: tech stack ──────────────────────────────────────
@@ -424,7 +468,7 @@ RACKS = [
     ("rack-02", "dev", [
         ("git",           "Git",          "version control"),
         ("githubactions", "GitHub Actions", "CI/CD"),
-        ("vercel",        "Vercel",       "deploys"),
+        ("vercel",        "Vercel",       "preview deploys"),
         ("nextdotjs",     "Next.js",      "web apps"),
         ("react",         "React",        "UI"),
         ("typescript",    "TypeScript",   "typed JS"),
@@ -437,19 +481,25 @@ RACKS = [
 ]
 
 
-def rack(st):
-    rw, gutter, top, rail, uh, ug = 455, 25, 34, 18, 34, 5
+def rack(st, w=W):
+    """Racks side by side on desktop, stacked on mobile."""
+    mobile = w < 600
+    gutter, rail, uh, ug = (16 if mobile else 25), 18, 34, 5
+    rw = w - 2 * gutter if mobile else (w - 3 * gutter) / 2
     units = max(len(u) for _, _, u in RACKS)
     rh = 14 + units * (uh + ug) + 9
-    H = top + rh + 40
+    slot = 34 + rh + 16          # label + rack + spacing
+    racks_h = slot * len(RACKS) if mobile else slot
+    H = racks_h + (40 if mobile else 24)
     rng = random.Random(42)
     body, k = [], 0
 
     for r, (rid, role, items) in enumerate(RACKS):
-        x0 = gutter + r * (rw + gutter)
-        body.append(T(x0, 22, f"{rid}", 13, C["muted"], weight="bold")
-                    + T(x0 + 9 * 7.8, 22, f"· {role}", 13, C["muted"])
-                    + T(x0 + rw, 22, f"{len(items)}U / 42U", 11, C["muted"], anchor="end"))
+        x0 = gutter if mobile else gutter + r * (rw + gutter)
+        top = 34 + (r * slot if mobile else 0)
+        body.append(T(x0, top - 12, f"{rid}", 13, C["muted"], weight="bold")
+                    + T(x0 + 9 * 7.8, top - 12, f"· {role}", 13, C["muted"])
+                    + T(x0 + rw, top - 12, f"{len(items)}U / 42U", 11, C["muted"], anchor="end"))
         # frame and rails with screw holes
         body.append(f'<rect x="{x0}" y="{top}" width="{rw}" height="{rh}" rx="6" fill="#0b0e13" stroke="{C["line"]}" stroke-width="2"/>')
         for rx_ in (x0 + 4, x0 + rw - rail - 4):
@@ -461,25 +511,28 @@ def rack(st):
             uw = rw - 2 * rail - 16
             leds = rw - 2 * rail - 16
             blink = f"animation-duration:{rng.uniform(.25, 1.6):.2f}s;animation-delay:{rng.uniform(0, 2):.2f}s"
-            vents = "".join(f'<rect x="{ux + uw - 92 + v * 7}" y="{uy + 9}" width="3" height="{uh - 18}" rx="1" fill="#0b0e13"/>' for v in range(7))
+            vents = "" if mobile else "".join(
+                f'<rect x="{ux + uw - 92 + v * 7}" y="{uy + 9}" width="3" height="{uh - 18}" rx="1" fill="#0b0e13"/>' for v in range(7))
             body.append(
                 f'<g class="u" style="animation-delay:{.15 + k * .06:.2f}s">'
                 f'<rect x="{ux}" y="{uy}" width="{uw}" height="{uh}" rx="3" fill="{C["face"]}" stroke="#2a313b"/>'
                 f'<rect x="{ux + 6}" y="{uy + 5}" width="{uh - 10}" height="{uh - 10}" rx="4" fill="#0d1117"/>'
                 + icon(slug, ux + 10, uy + 9, uh - 18)
                 + T(ux + uh + 6, uy + 21.5, name, 13, C["bright"], weight="bold")
-                + T(ux + uh + 6 + 17 * 7.8, uy + 21.5, desc, 11, C["muted"])
+                + T(ux + uh + 6 + (15 if mobile else 17) * 7.8, uy + 21.5, desc, 11, C["muted"])
                 + vents
                 + f'<circle cx="{ux + leds - 28}" cy="{uy + uh / 2}" r="3" fill="{C["green"]}"/>'
                 + f'<circle class="led" style="{blink}" cx="{ux + leds - 16}" cy="{uy + uh / 2}" r="3" fill="#{BRAND[slug] if BRAND[slug] != "E6EDF3" else "58A6FF"}"/>'
                 + "</g>")
             k += 1
 
-    fy = top + rh + 26
+    fy = racks_h + 8
     total = sum(len(u) for _, _, u in RACKS)
     body.append(f'<circle class="pulse" cx="{gutter + 5}" cy="{fy - 4}" r="4" fill="{C["green"]}"/>'
-                + T(gutter + 16, fy, f"PDU-A 230V · load 42% · inlet 24°C · {total}/{total} units healthy", 12, C["muted"])
-                + T(W - gutter, fy, f"uptime {uptime()}", 12, C["muted"], anchor="end"))
+                + T(gutter + 16, fy, f"{total}/{total} units healthy · load 42% · 24°C" if mobile
+                    else f"PDU-A 230V · load 42% · inlet 24°C · {total}/{total} units healthy", 12, C["muted"]))
+    body.append(T(gutter + 16, fy + 20, f"uptime {uptime()}", 12, C["muted"]) if mobile
+                else T(w - gutter, fy, f"uptime {uptime()}", 12, C["muted"], anchor="end"))
     css = (
         ".u{animation:uin .55s cubic-bezier(.2,.8,.2,1) backwards}"
         "@keyframes uin{from{opacity:0;transform:translateX(40px)}}"
@@ -488,7 +541,7 @@ def rack(st):
         ".pulse{animation:pulse 2s ease-in-out infinite}"
         "@keyframes pulse{50%{opacity:.25}}"
     )
-    return svg(W, H, "tech stack server rack", css, "".join(body))
+    return svg(w, int(H), "tech stack server rack", css, "".join(body))
 
 
 # ─────────────────── TELEMETRY: Grafana-style panel ────────────────────────
@@ -519,13 +572,13 @@ def odometer(cx, by, value, fs, color, delay):
     return "".join(out)
 
 
-def telemetry(st):
-    H = 408
+def telemetry(st, w=W):
+    mobile = w < 600
     body, css = [], []
-    body.append(f'<rect width="{W}" height="{H}" rx="10" fill="{G["bg"]}"/>')
     body.append(icon("grafana", 16, 12, 16, "#F46800")
-                + T(42, 25, "Home  ›  Dashboards  ›  andra / github-telemetry", 12, G["text"])
-                + T(W - 16, 25, "Last 1 year   ⟳ 24h", 12, G["muted"], anchor="end"))
+                + T(42, 25, "andra / github-telemetry" if mobile
+                    else "Home  ›  Dashboards  ›  andra / github-telemetry", 12, G["text"])
+                + T(w - 16, 25, "⟳ 24h" if mobile else "Last 1 year   ⟳ 24h", 12, G["muted"], anchor="end"))
 
     def panel(x, y, w, h, title):
         return (f'<rect x="{x:.1f}" y="{y}" width="{w:.1f}" height="{h}" rx="4" fill="{G["panel"]}" stroke="{G["line"]}"/>'
@@ -533,7 +586,8 @@ def telemetry(st):
 
     # row 1: stat panels
     y1, ph, m, g = 44, 108, 12, 10
-    pw = (W - 2 * m - 3 * g) / 4
+    per_row = 2 if mobile else 4
+    pw = (w - 2 * m - (per_row - 1) * g) / per_row
     stats = [
         ("Contributions · 1y", st["contributions"], G["green"], "last 365 days"),
         ("Commits · 1y",       st["commits"],       G["blue"],  f"{st['commits'] / 52:.1f} / week avg"),
@@ -542,7 +596,7 @@ def telemetry(st):
     ]
     weekly = [sum(c for _, c in st["days"][i:i + 7]) for i in range(0, len(st["days"]), 7)]
     for i, (title, val, col, sub) in enumerate(stats):
-        x = m + i * (pw + g)
+        x, y1 = m + i % per_row * (pw + g), 44 + i // per_row * (ph + g)
         body.append(panel(x, y1, pw, ph, title))
         if i == 0:  # sparkline behind the number, like Grafana's stat graph mode
             mx = max(weekly) or 1
@@ -555,7 +609,7 @@ def telemetry(st):
 
     # row 2: time series
     y2, h2 = y1 + ph + g, 220
-    tw = 600
+    tw = w - 2 * m if mobile else 600
     tx = m
     body.append(panel(tx, y2, tw, h2, "contributions / day · last 60 days"))
     days = st["days"][-60:]
@@ -581,16 +635,16 @@ def telemetry(st):
     body.append(f'<g class="fade">' + T(pts[peak][0] + 6, pts[peak][1] + 4, f"peak {vals[peak]}", 10, G["text"]) + "</g>")
 
     # row 2: languages, as a retro LCD bar gauge
-    lx = tx + tw + g
-    lw = W - m - lx
-    body.append(panel(lx, y2, lw, h2, "languages · bytes in public repos"))
+    lx, ly = (m, y2 + h2 + g) if mobile else (tx + tw + g, y2)
+    lw = w - m - lx
+    body.append(panel(lx, ly, lw, h2, "languages · bytes in public repos"))
     langs = st["languages"][:5]
     total = sum(s for _, s, _ in st["languages"]) or 1
     cells, cg = 28, 2
     cwid = (lw - 24 - (cells - 1) * cg) / cells
     for r, (name, size, col) in enumerate(langs):
         share = size / total * 100
-        ry = y2 + 50 + r * 34
+        ry = ly + 50 + r * 34
         body.append(T(lx + 12, ry, name, 12, G["text"]) + T(lx + lw - 12, ry, f"{share:.1f}%", 12, col, anchor="end"))
         lit = max(1, round(share / 100 * cells))
         for c in range(cells):
@@ -600,7 +654,10 @@ def telemetry(st):
             else:
                 body.append(f'<rect x="{cx_:.1f}" y="{ry + 7}" width="{cwid:.1f}" height="9" rx="1" fill="{G["cell"]}"/>')
 
-    body.append(T(m, H - 12, f"updated {st['updated']} · source: GitHub GraphQL API · refreshed daily by GitHub Actions", 10, G["muted"]))
+    H = ly + h2 + 30
+    body.insert(0, f'<rect width="{w}" height="{H}" rx="10" fill="{G["bg"]}"/>')
+    body.append(T(m, H - 12, f"updated {st['updated']} · GitHub GraphQL API" if mobile
+                  else f"updated {st['updated']} · source: GitHub GraphQL API · refreshed daily by GitHub Actions", 10, G["muted"]))
 
     css = (
         ".odo{animation:odo 1.6s cubic-bezier(.15,.85,.25,1) backwards}"
@@ -616,7 +673,7 @@ def telemetry(st):
     )
     defs = (f'<linearGradient id="ag" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="{G["green"]}" stop-opacity=".35"/>'
             f'<stop offset="1" stop-color="{G["green"]}" stop-opacity="0"/></linearGradient>')
-    return svg(W, H, "GitHub telemetry dashboard", css, "".join(body), defs)
+    return svg(w, H, "GitHub telemetry dashboard", css, "".join(body), defs)
 
 
 # ─────────────────── MAIN ──────────────────────────────────────────────────
@@ -624,6 +681,7 @@ if __name__ == "__main__":
     ASSETS.mkdir(exist_ok=True)
     st = load_stats()
     for name, fn in (("hero", hero), ("pipeline", pipeline), ("rack", rack), ("telemetry", telemetry)):
-        out = fn(st)
-        (ASSETS / f"{name}.svg").write_text(out, encoding="utf-8")
-        print(f"assets/{name}.svg  {len(out) / 1024:.1f} KB")
+        for suffix, w in (("", W), ("-mobile", W_MOBILE)):
+            out = fn(st, w)
+            (ASSETS / f"{name}{suffix}.svg").write_text(out, encoding="utf-8")
+            print(f"assets/{name}{suffix}.svg  {len(out) / 1024:.1f} KB")

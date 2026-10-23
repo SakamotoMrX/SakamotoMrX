@@ -1,5 +1,8 @@
 <a href="https://boredandra.vercel.app/">
-  <img src="assets/hero.svg" alt="andra@SakamotoMrX — neofetch: Junior DevOps & Infrastructure Automation from Bogor, Indonesia" width="100%">
+  <picture>
+    <source media="(max-width: 600px)" srcset="assets/hero-mobile.svg">
+    <img src="assets/hero.svg" alt="andra@SakamotoMrX — neofetch: Junior DevOps & Infrastructure Automation from Bogor, Indonesia" width="100%">
+  </picture>
 </a>
 
 <p align="center">
@@ -9,26 +12,35 @@
   <a href="https://instagram.com/andrahijati">instagram</a>
 </p>
 
-<img src="assets/pipeline.svg" alt="Deploy pipeline: git push → GitHub Actions → bash tests → docker build → kubectl apply → vercel --prod" width="100%">
+<picture>
+  <source media="(max-width: 600px)" srcset="assets/pipeline-mobile.svg">
+  <img src="assets/pipeline.svg" alt="Deploy pipeline: git push → GitHub Actions build → bash tests → Vercel preview → docker build → kubectl rollout to prod" width="100%">
+</picture>
 
-### `$ kubectl get nodes --show-labels`
+### `$ kubectl get nodes`
 
-<img src="assets/rack.svg" alt="Tech stack — infra: Linux, Arch Linux, macOS, Bash, YAML, Docker, Kubernetes, NGINX, Cloudflare, Prometheus, Grafana. dev: Git, GitHub Actions, Vercel, Next.js, React, TypeScript, Tailwind CSS, PHP, Swift, Tauri, Arduino" width="100%">
+<picture>
+  <source media="(max-width: 600px)" srcset="assets/rack-mobile.svg">
+  <img src="assets/rack.svg" alt="Tech stack — infra: Linux, Arch Linux, macOS, Bash, YAML, Docker, Kubernetes, NGINX, Cloudflare, Prometheus, Grafana. dev: Git, GitHub Actions, Vercel, Next.js, React, TypeScript, Tailwind CSS, PHP, Swift, Tauri, Arduino" width="100%">
+</picture>
 
 ### `$ docker ps`
 
-| Project | What it does | Stack | |
-|---|---|---|---|
-| **MacBar Monitor** | Real-time system metrics in the macOS menu bar | Swift · SwiftUI | — |
-| **MODULin** | *Bikin modul ajar jadi gampang* | Web | [live ↗](https://modulin.enama.my.id) |
-| **Calistung** | Early learning & interactive literacy practice | Next.js · Vercel · Tailwind | [live ↗](https://calistung.enama.my.id) |
-| **Nexotech Enama** | Company landing page & portal | React · Vercel · Tailwind | [live ↗](https://nexotech.enama.my.id) |
-| **Nexotech Solutions AI** | AI assistant & chat widget suite | Next.js · OpenAI API | [live ↗](https://nexotech-assistant.enama.my.id) |
-| **Nur Quran** | Digital Quran platform | React · API integration | [live ↗](https://nur-quran.enama.my.id) |
-| **Enama Laundry** | Laundry business management portal | Next.js · Vercel · Tailwind | [live ↗](https://laundry.enama.my.id) |
+| Project | What it does |
+|---|---|
+| **[MODULin ↗](https://modulin.enama.my.id)**<br><sub>Web</sub> | *Bikin modul ajar jadi gampang* — teaching module builder |
+| **[Calistung ↗](https://calistung.enama.my.id)**<br><sub>Next.js · Vercel · Tailwind</sub> | Early learning & interactive literacy practice |
+| **[Nexotech Enama ↗](https://nexotech.enama.my.id)**<br><sub>React · Vercel · Tailwind</sub> | Company landing page & portal |
+| **[Nexotech Solutions AI ↗](https://nexotech-assistant.enama.my.id)**<br><sub>Next.js · OpenAI API</sub> | AI assistant & chat widget suite |
+| **[Nur Quran ↗](https://nur-quran.enama.my.id)**<br><sub>React · API integration</sub> | Digital Quran platform |
+| **[Enama Laundry ↗](https://laundry.enama.my.id)**<br><sub>Next.js · Vercel · Tailwind</sub> | Laundry business management portal |
+| **MacBar Monitor**<br><sub>Swift · SwiftUI</sub> | Real-time system metrics in the macOS menu bar |
 
 ### `$ curl -s localhost:3000/api/dashboards/andra`
 
-<img src="assets/telemetry.svg" alt="GitHub telemetry: contributions, commits, streak, repos, daily activity and languages — refreshed daily" width="100%">
+<picture>
+  <source media="(max-width: 600px)" srcset="assets/telemetry-mobile.svg">
+  <img src="assets/telemetry.svg" alt="GitHub telemetry: contributions, commits, streak, repos, daily activity and languages — refreshed daily" width="100%">
+</picture>
 
-<p align="center"><sub><code>➜ ./deploy --prod --boring</code> · every SVG here is hand-rolled by <a href="generate_svg.py"><code>generate_svg.py</code></a> and re-rendered daily by GitHub Actions</sub></p>
+<p align="center"><sub><code>➜ ./deploy --prod --boring</code> · every SVG here is hand-rolled by <a href="generate_svg.py"><code>generate_svg.py</code></a></sub></p>
