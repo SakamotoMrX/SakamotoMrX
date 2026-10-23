@@ -19,10 +19,7 @@
 
 | Project | What it does | Stack | |
 |---|---|---|---|
-| **GreenFog** | SaaS platform for scalable web workflows | Next.js · Tailwind | [live ↗](https://greenfog-dev.enama.my.id) |
 | **MacBar Monitor** | Real-time system metrics in the macOS menu bar | Swift · SwiftUI | — |
-| **Termifore** | Web application | TypeScript | [live ↗](https://t-app.enama.my.id) |
-| **Invoice App** | Invoice generator for PT Asa Panca Cipta Optima | Web | [live ↗](https://invoice-app-mauve-alpha.vercel.app) |
 | **MODULin** | *Bikin modul ajar jadi gampang* | Web | [live ↗](https://modulin.enama.my.id) |
 | **Calistung** | Early learning & interactive literacy practice | Next.js · Vercel · Tailwind | [live ↗](https://calistung.enama.my.id) |
 | **Nexotech Enama** | Company landing page & portal | React · Vercel · Tailwind | [live ↗](https://nexotech.enama.my.id) |
