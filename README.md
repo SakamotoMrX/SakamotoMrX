@@ -15,7 +15,7 @@
 
 <img src="assets/rack.svg" alt="Tech stack — infra: Linux, Arch Linux, macOS, Bash, YAML, Docker, Kubernetes, NGINX, Cloudflare, Prometheus, Grafana. dev: Git, GitHub Actions, Vercel, Next.js, React, TypeScript, Tailwind CSS, PHP, Swift, Tauri, Arduino" width="100%">
 
-### `$ docker ps --format "table {{.Names}}\t{{.Status}}"`
+### `$ docker ps`
 
 | Project | What it does | Stack | |
 |---|---|---|---|
