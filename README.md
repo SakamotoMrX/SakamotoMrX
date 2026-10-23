@@ -1,70 +1,37 @@
-<a href="https://github.com/SakamotoMrX/SakamotoMrX">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="terminal_profile.svg">
-    <img src="terminal_profile.svg" alt="andrahijati terminal profile">
-  </picture>
+<a href="https://boredandra.vercel.app/">
+  <img src="assets/hero.svg" alt="andra@SakamotoMrX — neofetch: Junior DevOps & Infrastructure Automation from Bogor, Indonesia" width="100%">
 </a>
 
-<h2 align="center">Junior DevOps &amp; Infrastructure Automation</h2>
-<p align="center"><i>I automate the boring parts so the servers stay boring — the way infrastructure should be.</i></p>
-
 <p align="center">
-  <a href="https://boredandra.vercel.app/"><img src="https://img.shields.io/badge/Portfolio-boredandra.vercel.app-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Portfolio"></a>
-  <a href="mailto:andrahijati@gmail.com"><img src="https://img.shields.io/badge/Email-andrahijati%40gmail.com-EA4335?style=for-the-badge&logo=gmail&logoColor=white" alt="Email"></a>
+  <i>I automate the boring parts so the servers stay boring — the way infrastructure should be.</i><br>
+  <a href="https://boredandra.vercel.app/">portfolio</a> ·
+  <a href="mailto:andrahijati@gmail.com">email</a> ·
+  <a href="https://instagram.com/andrahijati">instagram</a>
 </p>
 
-## 🛠️ Tech Stack
+<img src="assets/pipeline.svg" alt="Deploy pipeline: git push → GitHub Actions → bash tests → docker build → kubectl apply → vercel --prod" width="100%">
 
-### 🐧 Systems & OS
-<p align="left">
-  <picture>
-    <source media="(prefers-color-scheme: light)" srcset="https://skillicons.dev/icons?i=linux,arch,ubuntu,apple,windows,bash&theme=light">
-    <img src="https://skillicons.dev/icons?i=linux,arch,ubuntu,apple,windows,bash&theme=dark" alt="linux, arch, ubuntu, apple, windows, bash">
-  </picture>
-</p>
+### `$ kubectl get nodes --show-labels`
 
-### ⚙️ DevOps & Infrastructure
-<p align="left">
-  <picture>
-    <source media="(prefers-color-scheme: light)" srcset="https://skillicons.dev/icons?i=docker,kubernetes,githubactions,nginx,cloudflare,vercel&theme=light">
-    <img src="https://skillicons.dev/icons?i=docker,kubernetes,githubactions,nginx,cloudflare,vercel&theme=dark" alt="docker, kubernetes, githubactions, nginx, cloudflare, vercel">
-  </picture>
-</p>
+<img src="assets/rack.svg" alt="Tech stack — infra: Linux, Arch Linux, macOS, Bash, YAML, Docker, Kubernetes, NGINX, Cloudflare, Prometheus, Grafana. dev: Git, GitHub Actions, Vercel, Next.js, React, TypeScript, Tailwind CSS, PHP, Swift, Tauri, Arduino" width="100%">
 
-### 📈 Monitoring
-<p align="left">
-  <picture>
-    <source media="(prefers-color-scheme: light)" srcset="https://skillicons.dev/icons?i=prometheus,grafana&theme=light">
-    <img src="https://skillicons.dev/icons?i=prometheus,grafana&theme=dark" alt="prometheus, grafana">
-  </picture>
-</p>
+### `$ docker ps --format "table {{.Names}}\t{{.Status}}"`
 
-### 🌐 Web Development
-<p align="left">
-  <picture>
-    <source media="(prefers-color-scheme: light)" srcset="https://skillicons.dev/icons?i=nextjs,react,ts,js,nodejs,tailwind,php&theme=light">
-    <img src="https://skillicons.dev/icons?i=nextjs,react,ts,js,nodejs,tailwind,php&theme=dark" alt="nextjs, react, ts, js, nodejs, tailwind, php">
-  </picture>
-</p>
+| Project | What it does | Stack | |
+|---|---|---|---|
+| **GreenFog** | SaaS platform for scalable web workflows | Next.js · Tailwind | [live ↗](https://greenfog-dev.enama.my.id) |
+| **MacBar Monitor** | Real-time system metrics in the macOS menu bar | Swift · SwiftUI | — |
+| **Termifore** | Web application | TypeScript | [live ↗](https://t-app.enama.my.id) |
+| **Invoice App** | Invoice generator for PT Asa Panca Cipta Optima | Web | [live ↗](https://invoice-app-mauve-alpha.vercel.app) |
+| **MODULin** | *Bikin modul ajar jadi gampang* | Web | [live ↗](https://modulin.enama.my.id) |
+| **Calistung** | Early learning & interactive literacy practice | Next.js · Vercel · Tailwind | [live ↗](https://calistung.enama.my.id) |
+| **Nexotech Enama** | Company landing page & portal | React · Vercel · Tailwind | [live ↗](https://nexotech.enama.my.id) |
+| **Nexotech Solutions AI** | AI assistant & chat widget suite | Next.js · OpenAI API | [live ↗](https://nexotech-assistant.enama.my.id) |
+| **Nur Quran** | Digital Quran platform | React · API integration | [live ↗](https://nur-quran.enama.my.id) |
+| **Enama Laundry** | Laundry business management portal | Next.js · Vercel · Tailwind | [live ↗](https://laundry.enama.my.id) |
 
-### 🍎 Apps & Hardware
-<p align="left">
-  <picture>
-    <source media="(prefers-color-scheme: light)" srcset="https://skillicons.dev/icons?i=swift,tauri,python,arduino&theme=light">
-    <img src="https://skillicons.dev/icons?i=swift,tauri,python,arduino&theme=dark" alt="swift, tauri, python, arduino">
-  </picture>
-</p>
+### `$ curl -s localhost:3000/api/dashboards/andra`
 
-### 🧰 Tools
-<p align="left">
-  <picture>
-    <source media="(prefers-color-scheme: light)" srcset="https://skillicons.dev/icons?i=git,github,neovim,vim,obsidian,md&theme=light">
-    <img src="https://skillicons.dev/icons?i=git,github,neovim,vim,obsidian,md&theme=dark" alt="git, github, neovim, vim, obsidian, md">
-  </picture>
-</p>
+<img src="assets/telemetry.svg" alt="GitHub telemetry: contributions, commits, streak, repos, daily activity and languages — refreshed daily" width="100%">
 
-## 📌 Highlights
-- **Linux first** — SysAdmin, hardening, and servers that stay up without ceremony.
-- **Containers** — Docker workflows for repeatable, portable deployments.
-- **Automation** — Bash & YAML that turn ten steps into one command.
-- **Shipping** — Next.js apps deployed on Vercel and self-hosted VMs.
+<p align="center"><sub><code>➜ ./deploy --prod --boring</code> · every SVG here is hand-rolled by <a href="generate_svg.py"><code>generate_svg.py</code></a> and re-rendered daily by GitHub Actions</sub></p>
