@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Renders the animated SVGs used by the profile README.
 
-  assets/hero.svg       neofetch-style terminal session
+  assets/hero.svg       `systemctl status andra` card
   assets/pipeline.svg   looping deploy pipeline
   assets/rack.svg       tech stack as a server rack
   assets/telemetry.svg  Grafana-style panel fed by the GitHub API
@@ -193,104 +193,88 @@ def uptime(today=None):
     return f"{months // 12} years, {months % 12} months"
 
 
-# ─────────────────── HERO: neofetch session ────────────────────────────────
+# ─────────────────── HERO: systemctl status card ───────────────────────────
+# Identity and motto only: skills live in rack.svg, numbers in telemetry.svg,
+# contact links in README.md, so nothing here repeats them.
 def hero(st, w=W):
     mobile = w < 600
-    fs, lh, pad = (14, 20, 16) if mobile else (15, 21, 24)
+    fs, lh, pad = (14, 20, 16) if mobile else (16, 23, 24)
     cw = fs * CW
     cols = int((w - 2 * pad) / cw)
     X = lambda col: pad + col * cw
 
-    rows = [
-        ("title", "", ""),
-        ("row", ". OS:",                    "macOS, Linux, Windows"),
-        ("row", ". Host:",                  "MacBook Air (M1, 2020)"),
-        ("row", ". Uptime:",                uptime()),
-        ("row", ". Role:",                  "Junior DevOps & Infrastructure Automation"),
-        ("row", ". Location:",              "Bogor, Indonesia"),
-        ("row", ". Shell:",                 "zsh, bash"),
-        ("row", ". IDE:",                   "Antigravity IDE, Vim, Nvim, Lazygit, Arduino IDE"),
-        ("sep", "", ""),
-        ("row", ". Languages.Programming:", "Bash, TypeScript, Swift"),
-        ("row", ". Languages.Config:",      "YAML, Dockerfile"),
-        ("row", ". Languages.Real:",        "Indonesian, English"),
-        ("sep", "", ""),
-        ("row", ". Stack.Infra:",           "Docker, Kubernetes, Vercel, VMs"),
-        ("row", ". Stack.Observability:",   "Prometheus, Grafana"),
-        ("row", ". Skills.System:",         "Linux SysAdmin, Hardening, Networking"),
-        ("row", ". Skills.Process:",        "SDLC & Agile"),
-        ("row", ". Hobbies:",               "Larping Linux, Arduino, Agentic AI"),
-        ("sep", "", ""),
-        ("sect", "- Contact", ""),
-        ("row", ". Email:",                 "andrahijati@gmail.com"),
-        ("row", ". Discord:",               "legacyy5030"),
-        ("row", ". Web:",                   "boredandra.vercel.app"),
-        ("row", ". Facebook:",              "web.facebook.com/andra.nugroho.921"),
-        ("sep", "", ""),
-        ("sect", "- GitHub.Stats", ""),
-        ("row", ". Repos | Stars | Followers:", f"{st['repos']} | {st['stars']} | {st['followers']}"),
-        ("row", ". Commits | Contributions (1y):", f"{st['commits']:,} | {st['contributions']:,}"),
-    ]
+    age = uptime()
+    stamp = dt.datetime.now(dt.timezone(dt.timedelta(hours=7))).strftime("%b %d %H:%M")
+    k = lambda s: (s, C["muted"], None)
+    v = lambda s: (s, C["text"], None)
+    lines = [
+        [("● ", C["green"], "dot"), ("andra.service", C["bright"], "bold"),
+         v(" - Junior DevOps & Infrastructure Automation")],
+        [k("     Loaded: "), v("loaded (andra.service; enabled; preset: boring)")],
+        [k("     Active: "), ("active (running)", C["green"], "bold"), v(f" since {BIRTH.year}; {age} ago")],
+        [k("   Location: "), v("Bogor, Indonesia")],
+        [k("   Main PID: "), v("1 (andra)")],
+        [k("     CGroup: "), v("/user.slice/andra.service")],
+        [("             └─1 ", C["dim"], None), v("/usr/bin/automate --the-boring-parts")],
+        [],
+    ] + [[("andra[1]: " if mobile else f"{stamp} andra[1]: ", C["dim"], None), (msg, C["cyan"], None)] for msg in (
+        "Linux first. Automation always.",
+        "Ship it, then automate it.",
+        "I automate the boring parts so the servers stay boring"
+        " — the way infrastructure should be.",
+    )]
 
-    cmd = "neofetch --boring"
+    def wrap(line):
+        """Split one segment line into rows of <= cols chars; only the last
+        segment breaks, continuing under where it started."""
+        head, (text, color, kind) = line[:-1], line[-1]
+        start = sum(len(s) for s, _, _ in head)
+        rows, row, col = [], [], 0
+        for s in head:
+            row.append((col, s)); col += len(s[0])
+        lead = len(text) - len(text.lstrip(" "))  # keep " - Junior…" spacing
+        col += lead
+        words, cur = text[lead:].split(" "), ""
+        for word in words:
+            cand = f"{cur} {word}" if cur else word
+            if col + len(cand) > cols and cur:
+                row.append((col, (cur, color, kind)))
+                rows.append(row)
+                row, col, cur = [], start, word.lstrip()
+            else:
+                cur = cand
+        row.append((col, (cur, color, kind)))
+        rows.append(row)
+        assert all(c + len(t[0]) <= cols for r in rows for c, t in r[-1:]) or len(words) == 1, "row overflows"
+        return rows
+
+    cmd = "systemctl status andra"
     y_cmd = 66
     y = y_cmd + lh * 1.6
-    t0, step = 1.9, 0.055
-    out = []
-    for i, (kind, key, val) in enumerate(rows):
-        if kind == "sep":
+    t0, step = 1.9, 0.09
+    out, i = [], 0
+    for line in lines:
+        if not line:
             y += lh * 0.6
             continue
-        delay = f"animation-delay:{t0 + i * step:.2f}s"
-        g = []
-        if kind == "title":
-            g += [T(X(0), y, "andra", fs, C["cyan"], weight="bold"),
-                  T(X(5), y, "@", fs, C["text"], weight="bold"),
-                  T(X(6), y, "SakamotoMrX", fs, C["cyan"], weight="bold"),
-                  T(X(18), y, "─" * (cols - 18), fs, C["dim"])]
-        elif kind == "sect":
-            g += [T(X(0), y, key, fs, C["bright"], weight="bold"),
-                  T(X(len(key) + 1), y, "─" * (cols - len(key) - 1), fs, C["dim"])]
-        else:
-            g.append(T(X(0), y, key, fs, C["orange"]))
-            lead = len(key)
-            if lead + len(val) + 2 > cols:  # too narrow: value drops below, wrapped on ", "
-                parts, line = [], ""
-                for item in val.split(", "):
-                    cand = f"{line}, {item}" if line else item
-                    if len(cand) + 1 > cols - 3 and line:
-                        parts.append(line + ",")
-                        cand = item
-                    line = cand
-                vals, lead = parts + [line], 1
-                y += lh
-            else:
-                vals = [val]
-            for j, v in enumerate(vals):
-                if j:
-                    y += lh
-                g.append(T(X(cols), y, v, fs, C["cyan"], anchor="end"))
-                n = cols - lead - len(v) - 2
-                if n > 0 and len(vals) == 1:
-                    g.append(T(X(lead + 1), y, "." * n, fs, C["dim"]))
-        out.append(f'<g class="r" style="{delay}">{"".join(g)}</g>')
-        y += lh
-
-    # neofetch colour blocks
-    y += lh * 0.5
-    t_end = t0 + len(rows) * step + 0.1
-    blocks = ["#484f58", "#f85149", "#3fb950", "#d29922", "#58a6ff", "#d2a8ff", "#39c5cf", "#e6edf3"]
-    out.append(f'<g class="r" style="animation-delay:{t_end:.2f}s">' + "".join(
-        f'<rect x="{X(i * 4):.1f}" y="{y - 13}" width="{cw * 3.6:.1f}" height="16" rx="2" fill="{c}"/>'
-        for i, c in enumerate(blocks)) + "</g>")
-    y += lh * 1.8
+        for row in wrap(line):
+            g = []
+            for col, (s, color, kind) in row:
+                if kind == "dot":
+                    g.append(f'<circle class="dot" cx="{X(col) + cw * .45:.1f}" cy="{y - fs * .33:.1f}" r="{fs * .3:.1f}" fill="{color}"/>')
+                elif s:
+                    g.append(T(X(col), y, s, fs, color, weight="bold" if kind == "bold" else None))
+            out.append(f'<g class="r" style="animation-delay:{t0 + i * step:.2f}s">{"".join(g)}</g>')
+            y += lh
+            i += 1
 
     # final prompt with blinking cursor
-    t_end += 0.25
+    y += lh * 0.8
+    t_end = t0 + i * step + 0.25
     out.append(
         f'<g class="r" style="animation-delay:{t_end:.2f}s">'
         + T(X(0), y, "➜", fs, C["green"], weight="bold") + T(X(2), y, "~", fs, C["cyan"], weight="bold")
-        + f'<rect class="cur" style="animation-delay:{t_end:.2f}s" x="{X(4):.1f}" y="{y - 13}" width="{cw:.1f}" height="17" fill="{C["text"]}"/></g>')
+        + f'<rect class="cur" style="animation-delay:{t_end:.2f}s" x="{X(4):.1f}" y="{y - fs * .85:.1f}" width="{cw:.1f}" height="{fs * 1.15:.1f}" fill="{C["text"]}"/></g>')
     H = int(y + 30)
 
     # the typed command: a cover slides off it one character at a time
@@ -306,8 +290,8 @@ def hero(st, w=W):
         T(X(0), y_cmd, "➜", fs, C["green"], weight="bold")
         + T(X(2), y_cmd, "~", fs, C["cyan"], weight="bold")
         + T(X(4), y_cmd, cmd, fs, C["bright"])
-        + f'<rect class="cover" x="{X(4):.1f}" y="{y_cmd - 15}" width="{len(cmd) * cw + 2:.1f}" height="20" fill="{C["bg"]}"/>'
-        + f'<rect class="tcur" x="{X(4):.1f}" y="{y_cmd - 13}" width="{cw:.1f}" height="17" fill="{C["text"]}"/>'
+        + f'<rect class="cover" x="{X(4):.1f}" y="{y_cmd - fs:.1f}" width="{len(cmd) * cw + 2:.1f}" height="{fs * 1.35:.1f}" fill="{C["bg"]}"/>'
+        + f'<rect class="tcur" x="{X(4):.1f}" y="{y_cmd - fs * .85:.1f}" width="{cw:.1f}" height="{fs * 1.15:.1f}" fill="{C["text"]}"/>'
     )
 
     css = (
@@ -315,6 +299,8 @@ def hero(st, w=W):
         "@keyframes rin{from{opacity:0;transform:translateX(-8px)}}"
         ".cur{animation:blink 1.05s step-end infinite}"
         "@keyframes blink{50%{opacity:0}}"
+        ".dot{animation:pulse 1.6s ease-in-out infinite}"
+        "@keyframes pulse{50%{opacity:.35}}"
         f".scan{{transform:translateY({H + 120}px);animation:scan 6s linear 3.5s infinite backwards}}"
         "@keyframes scan{from{transform:translateY(0)}}"
         + type_css
@@ -329,7 +315,7 @@ def hero(st, w=W):
     body = (wbody + prompt + "".join(out)
             + f'<rect class="scan" y="-120" width="{w}" height="120" fill="url(#sg)"/>'
             + border(w, H))
-    return svg(w, H, "andra@SakamotoMrX neofetch", css, body, defs)
+    return svg(w, H, "systemctl status andra", css, body, defs)
 
 
 # ─────────────────── PIPELINE: looping deploy ──────────────────────────────
@@ -490,7 +476,7 @@ def rack(st, w=W):
     rh = 14 + units * (uh + ug) + 9
     slot = 34 + rh + 16          # label + rack + spacing
     racks_h = slot * len(RACKS) if mobile else slot
-    H = racks_h + (40 if mobile else 24)
+    H = racks_h + 24
     rng = random.Random(42)
     body, k = [], 0
 
@@ -531,8 +517,6 @@ def rack(st, w=W):
     body.append(f'<circle class="pulse" cx="{gutter + 5}" cy="{fy - 4}" r="4" fill="{C["green"]}"/>'
                 + T(gutter + 16, fy, f"{total}/{total} units healthy · load 42% · 24°C" if mobile
                     else f"PDU-A 230V · load 42% · inlet 24°C · {total}/{total} units healthy", 12, C["muted"]))
-    body.append(T(gutter + 16, fy + 20, f"uptime {uptime()}", 12, C["muted"]) if mobile
-                else T(w - gutter, fy, f"uptime {uptime()}", 12, C["muted"], anchor="end"))
     css = (
         ".u{animation:uin .55s cubic-bezier(.2,.8,.2,1) backwards}"
         "@keyframes uin{from{opacity:0;transform:translateX(40px)}}"

@@ -1,15 +1,16 @@
 <a href="https://boredandra.vercel.app/">
   <picture>
     <source media="(max-width: 600px)" srcset="assets/hero-mobile.svg">
-    <img src="assets/hero.svg" alt="andra@SakamotoMrX — neofetch: Junior DevOps & Infrastructure Automation from Bogor, Indonesia" width="100%">
+    <img src="assets/hero.svg" alt="systemctl status andra — Junior DevOps &amp; Infrastructure Automation, Bogor, Indonesia. I automate the boring parts so the servers stay boring." width="100%">
   </picture>
 </a>
 
 <p align="center">
-  <i>I automate the boring parts so the servers stay boring — the way infrastructure should be.</i><br>
   <a href="https://boredandra.vercel.app/">portfolio</a> ·
   <a href="mailto:andrahijati@gmail.com">email</a> ·
-  <a href="https://instagram.com/andrahijati">instagram</a>
+  <a href="https://instagram.com/andrahijati">instagram</a> ·
+  <a href="https://web.facebook.com/andra.nugroho.921">facebook</a> ·
+  discord <code>legacyy5030</code>
 </p>
 
 <picture>
