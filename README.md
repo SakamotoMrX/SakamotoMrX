@@ -29,13 +29,14 @@
 
 | Project | What it does |
 |---|---|
-| **[MODULin ↗](https://modulin.enama.my.id)**<br><sub>Web</sub> | *Bikin modul ajar jadi gampang* — teaching module builder |
-| **[Calistung ↗](https://calistung.enama.my.id)**<br><sub>Next.js · Vercel · Tailwind</sub> | Early learning & interactive literacy practice |
-| **[Nexotech Enama ↗](https://nexotech.enama.my.id)**<br><sub>React · Vercel · Tailwind</sub> | Company landing page & portal |
-| **[Nexotech Solutions AI ↗](https://nexotech-assistant.enama.my.id)**<br><sub>Next.js · OpenAI API</sub> | AI assistant & chat widget suite |
-| **[Nur Quran ↗](https://nur-quran.enama.my.id)**<br><sub>React · API integration</sub> | Digital Quran platform |
-| **[Enama Laundry ↗](https://laundry.enama.my.id)**<br><sub>Next.js · Vercel · Tailwind</sub> | Laundry business management portal |
-| **MacBar Monitor**<br><sub>Swift · SwiftUI</sub> | Real-time system metrics in the macOS menu bar |
+| **[PT. KBN ↗](https://kbn.enama.my.id)**<br><sub>HTML · JavaScript</sub> | Company profile for PT Karya Bersama Nugroho, Bogor: software, catering and laundry |
+| **[NexoTech Solutions ↗](https://nexotech.enama.my.id)**<br><sub>Astro · TypeScript</sub> | Smart, secure digital transformation for growing businesses |
+| **[Docker Fundamental ↗](https://my-docker-nine.vercel.app)**<br><sub>Web</sub> | Container course from zero: 16 modules, theory and hands-on labs |
+| **[ASCII Studio ↗](https://asciidashboard.vercel.app)**<br><sub>TypeScript</sub> | ASCII art engine with GPU acceleration |
+| **[Nur Qur'an ↗](https://nur-quran.enama.my.id)**<br><sub>TypeScript</sub> | Digital Quran with tajweed |
+| **[Materi TKJ ↗](https://tkj-materi-web.vercel.app)**<br><sub>Web</sub> | SMK Computer & Network Engineering curriculum: 6 modules, theory and labs |
+| **[Bash Scripting ↗](https://my-bash.vercel.app)**<br><sub>Web</sub> | Shell scripting course from zero: 12 modules, theory and hands-on labs |
+| **[Gedung Haji Bate ↗](https://gedunghajibate.vercel.app)**<br><sub>TypeScript</sub> | Event venue management and booking |
 
 ### `$ curl -s localhost:3000/api/dashboards/andra`
 
